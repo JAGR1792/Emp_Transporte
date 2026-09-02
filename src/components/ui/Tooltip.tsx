@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type HTMLAttributes } from 'react'
+import { useState, type ReactNode } from 'react'
 import { cn } from '@/utils'
 
 export interface TooltipProps {

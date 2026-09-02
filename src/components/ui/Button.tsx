@@ -6,10 +6,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   loading?: boolean
   fullWidth?: boolean
+  leftIcon?: React.ReactNode
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', loading, fullWidth, disabled, children, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', loading, fullWidth, disabled, children, leftIcon, ...props }, ref) => {
     const baseStyles = 'inline-flex items-center justify-center font-semibold transition-all duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
 
     const variants = {
@@ -40,6 +41,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
         )}
+        {leftIcon}
         {children}
       </button>
     )

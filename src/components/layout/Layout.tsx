@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils'
 import { Button } from '@/components/ui'
-import { Menu, X, Truck, Package, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Menu, X, Truck, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
 
 const NAV_ITEMS = [
   { path: '/', label: 'Inicio' },
@@ -51,19 +51,19 @@ export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
-  // Scroll effect
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleScroll = () => {
-    setScrolled(window.scrollY > 20)
-  }
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleResize = () => {
-    if (window.innerWidth >= 1024) setMobileMenuOpen(false)
-  }
-
-  // In a real app, you'd use useEffect for these listeners
-  // For now, we'll keep it simple
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setMobileMenuOpen(false)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <header

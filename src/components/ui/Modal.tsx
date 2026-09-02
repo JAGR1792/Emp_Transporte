@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react'
+
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils'
 import { X } from 'lucide-react'
@@ -12,7 +12,6 @@ export interface ModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
   showCloseButton?: boolean
   closeOnOverlayClick?: boolean
-  closeOnEscape?: boolean
 }
 
 export const Modal = ({
@@ -24,7 +23,6 @@ export const Modal = ({
   size = 'md',
   showCloseButton = true,
   closeOnOverlayClick = true,
-  closeOnEscape = true,
 }: ModalProps) => {
   const sizes = {
     sm: 'max-w-sm',
