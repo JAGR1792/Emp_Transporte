@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils'
 import { Button } from '@/components/ui'
-import { Menu, X, Truck, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Menu, X, Truck, MapPin, Phone, Mail, Users } from 'lucide-react'
 
 const NAV_ITEMS = [
   { path: '/', label: 'Inicio' },
@@ -118,6 +118,11 @@ export const Header = () => {
                 Rastrear
               </Button>
             </Link>
+            <Link to="/login">
+              <Button variant="outline" size="sm" leftIcon={<Users className="w-4 h-4" />}>
+                Ingresar
+              </Button>
+            </Link>
             <Link to="/pasajeros">
               <Button size="sm" leftIcon={<Truck className="w-4 h-4" />}>
                 Comprar tiquetes
@@ -166,6 +171,11 @@ export const Header = () => {
                   </Link>
                 ))}
                 <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="text-center">
+                    <Button variant="outline" fullWidth leftIcon={<Users className="w-4 h-4" />}>
+                      Ingresar
+                    </Button>
+                  </Link>
                   <Link to="/rastreo" onClick={() => setMobileMenuOpen(false)} className="text-center">
                     <Button variant="outline" fullWidth leftIcon={<MapPin className="w-4 h-4" />}>
                       Rastrear envío
@@ -202,20 +212,6 @@ export const Footer = () => {
             <p className="text-body-sm text-slate-400 mb-6 leading-relaxed">
               Conectando Colombia desde 1995. Transporte de pasajeros, mensajería y paquetes a nivel nacional con la mejor calidad y seguridad.
             </p>
-            <div className="flex gap-4">
-              <a href={CONTACT_INFO.phone} className="text-slate-400 hover:text-white transition-colors" aria-label="Facebook">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors" aria-label="Twitter">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors" aria-label="Instagram">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors" aria-label="LinkedIn">
-                <Linkedin className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           {/* Empresa */}
@@ -279,7 +275,7 @@ export const Footer = () => {
         <div className="mt-12 lg:mt-16 pt-8 border-t border-slate-800">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-body-sm text-slate-500">
-              © 2024 Transporte Nacional. Todos los derechos reservados.
+              © 2026 Transporte Nacional. Todos los derechos reservados.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-body-sm text-slate-500">
               <div className="flex items-center gap-2">

@@ -1,12 +1,16 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Outlet } from 'react-router-dom';
 import { MainLayout } from './components/layout/Layout';
 import { Home } from './pages/Home';
 import { PlaceholderPage } from './pages/PlaceholderPages';
+import { Login } from './pages/Login';
+import { DashboardLayout } from './layouts/DashboardLayout';
+import { DashboardRouter } from './pages/dashboards/DashboardRouter';
 
 const App = () => {
   return (
-    <MainLayout>
-      <Routes>
+    <Routes>
+      {/* Public Routes with MainLayout */}
+      <Route element={<MainLayout><Outlet /></MainLayout>}>
         <Route path="/" element={<Home />} />
         <Route 
           path="/pasajeros" 
@@ -44,8 +48,16 @@ const App = () => {
             />
           } 
         />
-      </Routes>
-    </MainLayout>
+      </Route>
+
+      {/* Login */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Protected Routes with DashboardLayout */}
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<DashboardRouter />} />
+      </Route>
+    </Routes>
   );
 };
 
