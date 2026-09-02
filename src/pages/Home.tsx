@@ -177,7 +177,7 @@ export const Home = () => {
                       title: 'Cobertura Total',
                       desc: 'Llegamos a donde otros no pueden. Más de 150 terminales propias.'
                     }
-                  ].map((feature, i) => (
+                  ].map((feature) => (
                     <div key={feature.title} className="flex gap-5">
                       <div className={`w-14 h-14 ${feature.bg} rounded-radius-lg flex items-center justify-center shrink-0`}>
                         {feature.icon}
