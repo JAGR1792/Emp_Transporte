@@ -21,8 +21,8 @@ export const Home = () => {
             hoverTrailAmount={5}
           />
         </div>
-        {/* Gradient overlay to keep text readable */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-br from-brand-900/70 via-slate-900/80 to-black/90" />
+        {/* Gradient overlay to keep text readable — pointer-events-none so hover reaches the canvas */}
+        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-br from-brand-900/70 via-slate-900/80 to-black/90" />
         
         <div className="container-page relative z-10 pt-16">
           <div className="max-w-3xl">
