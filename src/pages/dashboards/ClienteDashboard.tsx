@@ -1,15 +1,12 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Package, Truck, Calendar, MapPin, CheckCircle,
-  Clock, Star, CreditCard, X, ArrowRight,
-  UserCircle, Hash, Phone,
+  Package, Truck, Calendar, MapPin,
+  Clock, Star, ArrowRight,
 } from 'lucide-react';
-import { Button } from '@/components/ui';
-import SelectorSillas from '@/components/ui/SelectorSillas';
-import { TicketCard } from '@/components/ui/TicketCard';
+import { ReservaFlow } from '@/components/ui/ReservaFlow';
 import {
-  useReservas, contarAsientos, type Salida, type Pasajero, type Reserva,
+  useReservas, contarAsientos, type Salida,
 } from '@/context/ReservasContext';
 import { useAuth } from '@/context/AuthContext';
 
@@ -20,267 +17,7 @@ const ENVIOS = [
   { guia: 'ENV-00412', destino: 'Bucaramanga', estado: 'En terminal', fecha: 'Listo para recoger', color: 'bg-amber-100 text-amber-700' },
 ];
 
-/* ─────────────────── Pasajero form ── */
-const PasajeroForm = ({
-  value, onChange,
-}: { value: Pasajero; onChange: (p: Pasajero) => void }) => {
-  const set = <K extends keyof Pasajero>(k: K, v: Pasajero[K]) =>
-    onChange({ ...value, [k]: v });
-
-  const inputCls = 'w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent';
-
-  return (
-    <div className="space-y-4">
-      <div>
-        <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
-          Nombre completo
-        </label>
-        <div className="relative">
-          <UserCircle className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-          <input
-            className={`${inputCls} pl-9`}
-            placeholder="Nombre y apellido"
-            value={value.nombre}
-            onChange={(e) => set('nombre', e.target.value)}
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
-            Tipo doc.
-          </label>
-          <select
-            className={inputCls}
-            value={value.tipoDoc}
-            onChange={(e) => set('tipoDoc', e.target.value as Pasajero['tipoDoc'])}
-          >
-            <option value="CC">Cédula (CC)</option>
-            <option value="CE">Cédula Extranjer.</option>
-            <option value="PP">Pasaporte (PP)</option>
-            <option value="TI">T. Identidad</option>
-          </select>
-        </div>
-        <div>
-          <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
-            Número doc.
-          </label>
-          <div className="relative">
-            <Hash className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input
-              className={`${inputCls} pl-9`}
-              placeholder="00000000"
-              value={value.numDoc}
-              onChange={(e) => set('numDoc', e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-      <div>
-        <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
-          Teléfono
-        </label>
-        <div className="relative">
-          <Phone className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-          <input
-            className={`${inputCls} pl-9`}
-            placeholder="300 000 0000"
-            value={value.telefono}
-            onChange={(e) => set('telefono', e.target.value)}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ─────────────────── Compra modal ── */
-type CompraStep = 'sillas' | 'datos' | 'pago';
-
-const CompraDrawer = ({
-  salida, onClose, userEmail, userName
-}: {
-  salida: Salida;
-  onClose: () => void;
-  userEmail: string;
-  userName: string;
-}) => {
-  const { crearReserva } = useReservas();
-  const [step, setStep] = useState<CompraStep>('sillas');
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-  const [pasajero, setPasajero] = useState<Pasajero>({
-    nombre: userName, tipoDoc: 'CC', numDoc: '', telefono: '', email: userEmail,
-  });
-  const [doneReserva, setDoneReserva] = useState<Reserva | null>(null);
-
-  const total = selectedSeats.length * salida.tarifa;
-
-  const confirmar = () => {
-    const r = crearReserva({
-      salidaId: salida.id,
-      asientos: selectedSeats,
-      pasajero,
-      total,
-      metodoPago: 'tarjeta',
-      vendidoPor: 'cliente',
-    });
-    setDoneReserva(r);
-  };
-
-  const canNext = step === 'sillas'
-    ? selectedSeats.length > 0
-    : step === 'datos'
-    ? pasajero.nombre.trim() !== '' && pasajero.numDoc.trim() !== '' && pasajero.telefono.trim() !== ''
-    : true;
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-50 flex"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      >
-        <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
-        <motion.div
-          className="absolute right-0 top-0 bottom-0 w-full max-w-2xl bg-slate-50 shadow-shadow-elevated flex flex-col overflow-hidden"
-          initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-          transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-        >
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-white shadow-sm z-10">
-            <div>
-              <h3 className="font-bold text-slate-900">Comprar Tiquetes</h3>
-              <p className="text-caption text-slate-500">
-                {salida.origen} → {salida.destino} · {salida.fecha}
-              </p>
-            </div>
-            <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {!doneReserva && (
-            <div className="flex bg-white border-b border-slate-200 z-10 shadow-sm">
-              {(['sillas', 'datos', 'pago'] as CompraStep[]).map((s, i) => (
-                <div
-                  key={s}
-                  className={`flex-1 py-3 text-center text-caption font-semibold transition-colors ${
-                    step === s
-                      ? 'text-brand-600 border-b-2 border-brand-600 bg-brand-50'
-                      : i < (['sillas', 'datos', 'pago'] as CompraStep[]).indexOf(step)
-                      ? 'text-emerald-600'
-                      : 'text-slate-400'
-                  }`}
-                >
-                  {i + 1}. {s === 'sillas' ? 'Asientos' : s === 'datos' ? 'Tus Datos' : 'Pago'}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex-1 overflow-y-auto p-6">
-            <AnimatePresence mode="wait">
-              {doneReserva ? (
-                <motion.div
-                  key="done"
-                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center py-4"
-                >
-                  <div className="flex items-center gap-2 mb-6">
-                    <CheckCircle className="w-6 h-6 text-emerald-500" />
-                    <h3 className="text-heading-md font-bold text-slate-900">¡Compra Exitosa!</h3>
-                  </div>
-                  <TicketCard reserva={doneReserva} salida={salida} />
-                  <div className="mt-8">
-                    <Button onClick={onClose} size="lg">Ir a mis viajes</Button>
-                  </div>
-                </motion.div>
-              ) : step === 'sillas' ? (
-                <motion.div key="sillas" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                  <SelectorSillas
-                    seats={salida.seats}
-                    initialSelected={selectedSeats}
-                    onChange={setSelectedSeats}
-                    info={{
-                      numero: salida.busNumero,
-                      origen: salida.origen,
-                      destino: salida.destino,
-                      horario: salida.horario,
-                      tarifa: salida.tarifa,
-                    }}
-                  />
-                </motion.div>
-              ) : step === 'datos' ? (
-                <motion.div key="datos" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="max-w-md mx-auto bg-white p-6 rounded-radius-2xl border border-slate-200 shadow-sm">
-                  <h3 className="font-bold text-slate-900 mb-4">Datos del pasajero principal</h3>
-                  <PasajeroForm value={pasajero} onChange={setPasajero} />
-                </motion.div>
-              ) : (
-                <motion.div key="pago" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="max-w-md mx-auto space-y-6">
-                  <div className="bg-white rounded-radius-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div className="bg-slate-900 p-4 text-white">
-                      <h4 className="font-bold text-body-sm mb-1">Resumen de compra</h4>
-                      <p className="text-caption text-slate-400">{salida.origen} → {salida.destino}</p>
-                    </div>
-                    <div className="p-4 space-y-3">
-                      <div className="flex justify-between text-body-sm">
-                        <span className="text-slate-500">Asientos ({selectedSeats.length})</span>
-                        <span className="font-semibold text-slate-800">{selectedSeats.sort().join(', ')}</span>
-                      </div>
-                      <div className="flex justify-between text-body-sm">
-                        <span className="text-slate-500">Tarifa por asiento</span>
-                        <span className="font-semibold text-slate-800">${salida.tarifa.toLocaleString('es-CO')}</span>
-                      </div>
-                      <div className="flex justify-between text-body-sm border-t border-slate-100 pt-3 mt-1">
-                        <span className="font-bold text-slate-900">Total a pagar</span>
-                        <span className="font-bold text-heading-sm text-brand-600">
-                          ${total.toLocaleString('es-CO')}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-radius-2xl border border-slate-200 shadow-sm p-4">
-                    <h4 className="font-bold text-slate-900 mb-3 text-body-sm flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-brand-500" /> Tarjeta de crédito
-                    </h4>
-                    {/* Mock card input */}
-                    <div className="space-y-3">
-                      <input type="text" placeholder="Número de tarjeta" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm" defaultValue="**** **** **** 4242" />
-                      <div className="grid grid-cols-2 gap-3">
-                        <input type="text" placeholder="MM/YY" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm" defaultValue="12/28" />
-                        <input type="text" placeholder="CVC" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm" defaultValue="***" />
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {!doneReserva && (
-            <div className="px-6 py-4 border-t border-slate-200 bg-white flex justify-between items-center z-10 shadow-sm">
-              <Button variant="ghost" onClick={() => {
-                if (step === 'sillas') onClose();
-                else if (step === 'datos') setStep('sillas');
-                else setStep('datos');
-              }}>
-                {step === 'sillas' ? 'Cancelar' : 'Atrás'}
-              </Button>
-              <Button disabled={!canNext} onClick={() => {
-                if (step === 'sillas') setStep('datos');
-                else if (step === 'datos') setStep('pago');
-                else confirmar();
-              }}>
-                {step === 'pago' ? `Pagar $${total.toLocaleString('es-CO')}` : 'Continuar'}
-              </Button>
-            </div>
-          )}
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
-
-/* ─────────────────── Main ── */
+/* ─────────────────── Mock data for extra sections ── */
 
 export const ClienteDashboard = () => {
   const { user } = useAuth();
@@ -331,7 +68,7 @@ export const ClienteDashboard = () => {
         <div className="md:col-span-2 space-y-6">
           {/* Hero Search Box */}
           <motion.div
-            className="bg-brand-600 rounded-radius-2xl p-6 text-white shadow-shadow-md relative overflow-hidden"
+            className="bg-brand-600 rounded-radius-2xl p-4 md:p-6 text-white shadow-shadow-md relative overflow-hidden"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
@@ -339,17 +76,17 @@ export const ClienteDashboard = () => {
               <h3 className="text-heading-sm font-bold mb-4 flex items-center gap-2">
                 <Calendar className="w-5 h-5" /> ¿Adónde viajas hoy?
               </h3>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 bg-white/10 rounded-radius-lg p-1 flex">
-                  <div className="relative flex-1">
+              <div className="flex flex-col md:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row flex-1 bg-white/10 md:bg-white/10 rounded-radius-lg p-1 gap-1 sm:gap-0">
+                  <div className="relative flex-1 bg-white/10 sm:bg-transparent rounded-md sm:rounded-none">
                     <MapPin className="absolute left-3 top-3 w-4 h-4 text-white/60" />
                     <input
                       type="text" placeholder="Origen" value={origen} onChange={(e) => setOrigen(e.target.value)}
                       className="w-full bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 pl-9 pr-3 py-2 text-body-sm"
                     />
                   </div>
-                  <div className="w-px bg-white/20 mx-1 my-2" />
-                  <div className="relative flex-1">
+                  <div className="w-full h-px sm:w-px sm:h-auto bg-white/20 mx-0 sm:mx-1 my-0 sm:my-2" />
+                  <div className="relative flex-1 bg-white/10 sm:bg-transparent rounded-md sm:rounded-none">
                     <MapPin className="absolute left-3 top-3 w-4 h-4 text-white/60" />
                     <input
                       type="text" placeholder="Destino" value={destino} onChange={(e) => setDestino(e.target.value)}
@@ -359,7 +96,7 @@ export const ClienteDashboard = () => {
                 </div>
                 <button
                   onClick={doSearch}
-                  className="bg-white text-brand-700 hover:bg-brand-50 px-6 py-2 rounded-radius-lg font-bold text-body-sm transition-colors shadow-sm"
+                  className="bg-white text-brand-700 hover:bg-brand-50 w-full md:w-auto px-6 py-3 md:py-2 rounded-radius-lg font-bold text-body-sm transition-colors shadow-sm"
                 >
                   Buscar
                 </button>
@@ -378,23 +115,23 @@ export const ClienteDashboard = () => {
                     {searchResults.map((s) => {
                       const { libre } = contarAsientos(s.seats);
                       return (
-                        <div key={s.id} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-radius-xl p-4 flex items-center justify-between transition-colors">
+                        <div key={s.id} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-radius-xl p-3 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-0 transition-colors">
                           <div>
-                            <p className="font-bold text-body-sm">{s.origen} → {s.destino}</p>
-                            <p className="text-caption text-brand-100 flex items-center gap-2 mt-0.5">
-                              <Clock className="w-3 h-3" /> {s.horario}
-                              <span className="w-1 h-1 bg-white/40 rounded-full" />
-                              {s.duracion}
-                              <span className="w-1 h-1 bg-white/40 rounded-full" />
-                              {libre} sillas libres
+                            <p className="font-bold text-body-sm md:text-base">{s.origen} → {s.destino}</p>
+                            <p className="text-caption md:text-sm text-brand-100 flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 md:mt-0.5">
+                              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {s.horario}</span>
+                              <span className="hidden md:inline w-1 h-1 bg-white/40 rounded-full" />
+                              <span>{s.duracion}</span>
+                              <span className="hidden md:inline w-1 h-1 bg-white/40 rounded-full" />
+                              <span className="w-full md:w-auto font-medium">{libre} sillas libres</span>
                             </p>
                           </div>
-                          <div className="flex items-center gap-4">
-                            <span className="font-bold text-body-sm">${s.tarifa.toLocaleString('es-CO')}</span>
+                          <div className="flex items-center justify-between md:justify-end gap-4 border-t border-white/10 pt-2 md:border-0 md:pt-0">
+                            <span className="font-bold text-body-md md:text-body-sm">${s.tarifa.toLocaleString('es-CO')}</span>
                             <button
                               disabled={libre === 0}
                               onClick={() => setVentaSalida(s)}
-                              className="bg-white text-brand-700 px-4 py-1.5 rounded-radius-md font-bold text-caption hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+                              className="bg-white text-brand-700 px-6 py-2 md:px-4 md:py-1.5 rounded-radius-md font-bold text-body-sm md:text-caption hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
                             >
                               {libre === 0 ? 'Agotado' : 'Comprar'}
                             </button>
@@ -508,8 +245,9 @@ export const ClienteDashboard = () => {
       </div>
 
       {ventaSalida && (
-        <CompraDrawer
+        <ReservaFlow
           salida={ventaSalida}
+          role="cliente"
           onClose={() => setVentaSalida(null)}
           userEmail={user?.email ?? ''}
           userName={user?.name ?? ''}

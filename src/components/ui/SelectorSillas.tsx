@@ -254,10 +254,11 @@ export default function SelectorSillas({
 
       {/* Bus body */}
       <div
-        className={`bg-slate-50 border-2 border-slate-200 ${info ? '' : 'rounded-t-radius-xl'} rounded-b-radius-xl p-5 overflow-x-auto`}
+        className={`bg-slate-50 border-2 border-slate-200 ${info ? '' : 'rounded-t-radius-xl'} rounded-b-radius-xl p-4 md:p-5 overflow-x-auto touch-pan-x snap-x`}
         style={{ background: 'linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%)' }}
       >
-        {/* FRENTE label + steering wheel */}
+        <div className="min-w-[320px] md:min-w-[360px] mx-auto px-2 pb-4">
+          {/* FRENTE label + steering wheel */}
         <div className="flex items-center justify-center mb-4">
           <div className="flex-1 border-t-2 border-dashed border-slate-300" />
           <div className="px-4 flex flex-col items-center gap-1">
@@ -387,13 +388,14 @@ export default function SelectorSillas({
           ))}
         </div>
 
-        {/* Parte trasera */}
-        <div className="flex items-center mt-4">
-          <div className="flex-1 border-t-2 border-dashed border-slate-300" />
-          <span className="px-4 text-caption font-bold text-slate-400 tracking-widest uppercase">
-            Parte trasera
-          </span>
-          <div className="flex-1 border-t-2 border-dashed border-slate-300" />
+          {/* Parte trasera */}
+          <div className="flex items-center mt-6">
+            <div className="flex-1 border-t-2 border-dashed border-slate-300" />
+            <span className="px-4 text-caption font-bold text-slate-400 tracking-widest uppercase">
+              Parte trasera
+            </span>
+            <div className="flex-1 border-t-2 border-dashed border-slate-300" />
+          </div>
         </div>
       </div>
 
