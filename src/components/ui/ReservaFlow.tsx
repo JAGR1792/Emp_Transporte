@@ -140,22 +140,18 @@ export function ReservaFlow({
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-stretch md:items-center md:justify-end"
+        className="fixed inset-0 z-[100] flex items-center justify-center sm:p-4 md:p-6"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       >
         {/* Backdrop */}
-        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
 
-        {/* Modal / Drawer 
-            Mobile: 100vw, 100vh, fixed inset
-            Desktop: max-w-2xl, h-full, slide from right
-        */}
         <motion.div
-          className="relative w-full h-full md:max-w-2xl bg-white shadow-shadow-elevated flex flex-col md:h-full overflow-hidden"
-          initial={{ x: '100%', y: 0 }} 
-          animate={{ x: 0, y: 0 }} 
-          exit={{ x: '100%', y: 0 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-3xl bg-white md:rounded-radius-2xl shadow-shadow-elevated flex flex-col overflow-hidden"
+          initial={{ scale: 0.95, y: 20, opacity: 0 }}
+          animate={{ scale: 1, y: 0, opacity: 1 }}
+          exit={{ scale: 0.95, y: 20, opacity: 0 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-slate-50 z-10 shrink-0">

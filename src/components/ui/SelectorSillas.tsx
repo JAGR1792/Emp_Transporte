@@ -92,8 +92,8 @@ const SeatIcon = ({
   return (
     <svg
       viewBox="0 0 36 44"
-      width="36"
-      height="44"
+      width="48"
+      height="58"
       xmlns="http://www.w3.org/2000/svg"
       style={{ overflow: 'visible' }}
     >
@@ -156,7 +156,7 @@ const SeatIcon = ({
 /* ─────────────────── Driver seat ── */
 const DriverSeat = () => (
   <div className="flex flex-col items-center gap-1 opacity-60">
-    <svg viewBox="0 0 36 44" width="32" height="40">
+    <svg viewBox="0 0 36 44" width="44" height="54">
       <rect x="4" y="1" width="28" height="9" rx="4" fill="#334155" />
       <rect x="2" y="8" width="32" height="24" rx="3" fill="#475569" stroke="#334155" strokeWidth="1.5" />
       <rect x="4" y="30" width="28" height="12" rx="3" fill="#475569" stroke="#334155" strokeWidth="1.5" />
@@ -200,22 +200,57 @@ export default function SelectorSillas({
 }: SelectorSillasProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set(initialSelected));
   const [hovered, setHovered] = useState<string | null>(null);
+  
+  // Drag-to-select state
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragAction, setDragAction] = useState<'select' | 'deselect'>('select');
 
-  const toggle = (id: string) => {
+  const toggle = (id: string, forceAction?: 'select' | 'deselect') => {
     if (readOnly) return;
     const status = seats[id];
     if (status === 'ocupado' || status === 'inhabilitado') return;
 
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
+      const isCurrentlySelected = next.has(id);
+      
+      if (forceAction === 'select' && !isCurrentlySelected) {
         next.add(id);
+      } else if (forceAction === 'deselect' && isCurrentlySelected) {
+        next.delete(id);
+      } else if (!forceAction) {
+        if (isCurrentlySelected) next.delete(id);
+        else next.add(id);
+      } else {
+        // Unchanged
+        return prev;
       }
+      
       onChange?.([...next]);
       return next;
     });
+  };
+
+  const handleMouseDown = (id: string) => {
+    if (readOnly) return;
+    const status = seats[id];
+    if (status === 'ocupado' || status === 'inhabilitado') return;
+    
+    setIsDragging(true);
+    const action = selected.has(id) ? 'deselect' : 'select';
+    setDragAction(action);
+    toggle(id, action);
+  };
+
+  const handleMouseEnter = (id: string) => {
+    setHovered(id);
+    if (isDragging) {
+      toggle(id, dragAction);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   const libres = Object.values(seats).filter((s) => s === 'libre').length;
@@ -233,7 +268,11 @@ export default function SelectorSillas({
   };
 
   return (
-    <div className="w-full select-none">
+    <div 
+      className="w-full select-none"
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
       {/* Bus info header */}
       {info && (
         <div className="bg-slate-900 text-white rounded-t-radius-xl px-5 py-3 flex items-center justify-between">
@@ -257,7 +296,7 @@ export default function SelectorSillas({
         className={`bg-slate-50 border-2 border-slate-200 ${info ? '' : 'rounded-t-radius-xl'} rounded-b-radius-xl p-4 md:p-5 overflow-x-auto touch-pan-x snap-x`}
         style={{ background: 'linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%)' }}
       >
-        <div className="min-w-[320px] md:min-w-[360px] mx-auto px-2 pb-4">
+        <div className="w-fit min-w-[320px] mx-auto px-2 pb-4">
           {/* FRENTE label + steering wheel */}
         <div className="flex items-center justify-center mb-4">
           <div className="flex-1 border-t-2 border-dashed border-slate-300" />
@@ -278,19 +317,19 @@ export default function SelectorSillas({
         </div>
 
         {/* Seat grid */}
-        <div className="flex flex-col gap-2 min-w-[300px]">
+        <div className="flex flex-col gap-3 min-w-[300px]">
           {/* Column headers */}
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-3 mb-1">
             <div className="w-5 shrink-0" /> {/* row label spacer */}
-            <div className="w-9 text-center text-caption text-slate-400 font-bold">A</div>
-            <div className="w-9 text-center text-caption text-slate-400 font-bold">B</div>
-            <div className="w-6 shrink-0" /> {/* aisle */}
-            <div className="w-9 text-center text-caption text-slate-400 font-bold">C</div>
-            <div className="w-9 text-center text-caption text-slate-400 font-bold">D</div>
+            <div className="w-12 text-center text-caption text-slate-400 font-bold">A</div>
+            <div className="w-12 text-center text-caption text-slate-400 font-bold">B</div>
+            <div className="w-8 shrink-0" /> {/* aisle */}
+            <div className="w-12 text-center text-caption text-slate-400 font-bold">C</div>
+            <div className="w-12 text-center text-caption text-slate-400 font-bold">D</div>
           </div>
 
           {ROWS.map((row) => (
-            <div key={row} className="flex items-center gap-2">
+            <div key={row} className="flex items-center gap-3">
               {/* Row number */}
               <div className="w-5 text-center text-caption text-slate-400 font-semibold shrink-0">
                 {ROWS.indexOf(row) + 1}
@@ -309,8 +348,9 @@ export default function SelectorSillas({
                     key={id}
                     whileHover={!readOnly && status === 'libre' ? { scale: 1.1, y: -1 } : {}}
                     whileTap={!readOnly && status === 'libre' ? { scale: 0.95 } : {}}
-                    onClick={() => toggle(id)}
-                    onMouseEnter={() => setHovered(id)}
+                    onClick={(e) => { e.preventDefault(); /* handled by mouseDown/Up */ }}
+                    onMouseDown={() => handleMouseDown(id)}
+                    onMouseEnter={() => handleMouseEnter(id)}
                     onMouseLeave={() => setHovered(null)}
                     disabled={readOnly || status === 'ocupado' || status === 'inhabilitado'}
                     title={
@@ -340,7 +380,7 @@ export default function SelectorSillas({
               })}
 
               {/* Aisle */}
-              <div className="w-6 shrink-0 flex flex-col items-center gap-0.5">
+              <div className="w-8 shrink-0 flex flex-col items-center gap-0.5">
                 <div className="w-px h-full bg-slate-200" />
               </div>
 
@@ -357,8 +397,9 @@ export default function SelectorSillas({
                     key={id}
                     whileHover={!readOnly && status === 'libre' ? { scale: 1.1, y: -1 } : {}}
                     whileTap={!readOnly && status === 'libre' ? { scale: 0.95 } : {}}
-                    onClick={() => toggle(id)}
-                    onMouseEnter={() => setHovered(id)}
+                    onClick={(e) => { e.preventDefault(); /* handled by mouseDown/Up */ }}
+                    onMouseDown={() => handleMouseDown(id)}
+                    onMouseEnter={() => handleMouseEnter(id)}
                     onMouseLeave={() => setHovered(null)}
                     disabled={readOnly || status === 'ocupado' || status === 'inhabilitado'}
                     title={
