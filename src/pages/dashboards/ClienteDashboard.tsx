@@ -1,187 +1,520 @@
-import { motion } from 'framer-motion';
-import { Package, Truck, Calendar, MapPin, Search, CheckCircle, Clock, Star, CreditCard, Download } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Package, Truck, Calendar, MapPin, CheckCircle,
+  Clock, Star, CreditCard, X, ArrowRight,
+  UserCircle, Hash, Phone,
+} from 'lucide-react';
 import { Button } from '@/components/ui';
+import SelectorSillas from '@/components/ui/SelectorSillas';
+import { TicketCard } from '@/components/ui/TicketCard';
+import {
+  useReservas, contarAsientos, type Salida, type Pasajero, type Reserva,
+} from '@/context/ReservasContext';
+import { useAuth } from '@/context/AuthContext';
 
-const PROXIMOS_VIAJES = [
-  { ruta: 'Bogotá → Medellín', fecha: 'Mañana, 08:30 AM', bus: 'Bus 402', asiento: '12A', tipo: 'Ejecutivo', precio: '$85.000' },
-];
-
-const HISTORIAL_VIAJES = [
-  { ruta: 'Bogotá → Cali', fecha: '28 Ago 2026', estado: 'Completado', precio: '$72.000' },
-  { ruta: 'Cartagena → Bogotá', fecha: '15 Ago 2026', estado: 'Completado', precio: '$110.000' },
-  { ruta: 'Bogotá → Medellín', fecha: '02 Ago 2026', estado: 'Completado', precio: '$68.000' },
-];
-
+/* ─────────────────── Mock data for extra sections ── */
 const ENVIOS = [
   { guia: 'ENV-99281', destino: 'Medellín', estado: 'Entregado', fecha: '04 Sep', color: 'bg-emerald-100 text-emerald-700' },
   { guia: 'TRN-481920', destino: 'Bogotá', estado: 'En tránsito', fecha: 'Est. 06 Sep', color: 'bg-brand-100 text-brand-700' },
   { guia: 'ENV-00412', destino: 'Bucaramanga', estado: 'En terminal', fecha: 'Listo para recoger', color: 'bg-amber-100 text-amber-700' },
 ];
 
-const VIAJE_STEPS = ['Comprado', 'Check-in', 'Abordando', 'En camino'];
+/* ─────────────────── Pasajero form ── */
+const PasajeroForm = ({
+  value, onChange,
+}: { value: Pasajero; onChange: (p: Pasajero) => void }) => {
+  const set = <K extends keyof Pasajero>(k: K, v: Pasajero[K]) =>
+    onChange({ ...value, [k]: v });
+
+  const inputCls = 'w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent';
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
+          Nombre completo
+        </label>
+        <div className="relative">
+          <UserCircle className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+          <input
+            className={`${inputCls} pl-9`}
+            placeholder="Nombre y apellido"
+            value={value.nombre}
+            onChange={(e) => set('nombre', e.target.value)}
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
+            Tipo doc.
+          </label>
+          <select
+            className={inputCls}
+            value={value.tipoDoc}
+            onChange={(e) => set('tipoDoc', e.target.value as Pasajero['tipoDoc'])}
+          >
+            <option value="CC">Cédula (CC)</option>
+            <option value="CE">Cédula Extranjer.</option>
+            <option value="PP">Pasaporte (PP)</option>
+            <option value="TI">T. Identidad</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
+            Número doc.
+          </label>
+          <div className="relative">
+            <Hash className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+            <input
+              className={`${inputCls} pl-9`}
+              placeholder="00000000"
+              value={value.numDoc}
+              onChange={(e) => set('numDoc', e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+      <div>
+        <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
+          Teléfono
+        </label>
+        <div className="relative">
+          <Phone className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+          <input
+            className={`${inputCls} pl-9`}
+            placeholder="300 000 0000"
+            value={value.telefono}
+            onChange={(e) => set('telefono', e.target.value)}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────── Compra modal ── */
+type CompraStep = 'sillas' | 'datos' | 'pago';
+
+const CompraDrawer = ({
+  salida, onClose, userEmail, userName
+}: {
+  salida: Salida;
+  onClose: () => void;
+  userEmail: string;
+  userName: string;
+}) => {
+  const { crearReserva } = useReservas();
+  const [step, setStep] = useState<CompraStep>('sillas');
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [pasajero, setPasajero] = useState<Pasajero>({
+    nombre: userName, tipoDoc: 'CC', numDoc: '', telefono: '', email: userEmail,
+  });
+  const [doneReserva, setDoneReserva] = useState<Reserva | null>(null);
+
+  const total = selectedSeats.length * salida.tarifa;
+
+  const confirmar = () => {
+    const r = crearReserva({
+      salidaId: salida.id,
+      asientos: selectedSeats,
+      pasajero,
+      total,
+      metodoPago: 'tarjeta',
+      vendidoPor: 'cliente',
+    });
+    setDoneReserva(r);
+  };
+
+  const canNext = step === 'sillas'
+    ? selectedSeats.length > 0
+    : step === 'datos'
+    ? pasajero.nombre.trim() !== '' && pasajero.numDoc.trim() !== '' && pasajero.telefono.trim() !== ''
+    : true;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      >
+        <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+        <motion.div
+          className="absolute right-0 top-0 bottom-0 w-full max-w-2xl bg-slate-50 shadow-shadow-elevated flex flex-col overflow-hidden"
+          initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+          transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+        >
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-white shadow-sm z-10">
+            <div>
+              <h3 className="font-bold text-slate-900">Comprar Tiquetes</h3>
+              <p className="text-caption text-slate-500">
+                {salida.origen} → {salida.destino} · {salida.fecha}
+              </p>
+            </div>
+            <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {!doneReserva && (
+            <div className="flex bg-white border-b border-slate-200 z-10 shadow-sm">
+              {(['sillas', 'datos', 'pago'] as CompraStep[]).map((s, i) => (
+                <div
+                  key={s}
+                  className={`flex-1 py-3 text-center text-caption font-semibold transition-colors ${
+                    step === s
+                      ? 'text-brand-600 border-b-2 border-brand-600 bg-brand-50'
+                      : i < (['sillas', 'datos', 'pago'] as CompraStep[]).indexOf(step)
+                      ? 'text-emerald-600'
+                      : 'text-slate-400'
+                  }`}
+                >
+                  {i + 1}. {s === 'sillas' ? 'Asientos' : s === 'datos' ? 'Tus Datos' : 'Pago'}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex-1 overflow-y-auto p-6">
+            <AnimatePresence mode="wait">
+              {doneReserva ? (
+                <motion.div
+                  key="done"
+                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center py-4"
+                >
+                  <div className="flex items-center gap-2 mb-6">
+                    <CheckCircle className="w-6 h-6 text-emerald-500" />
+                    <h3 className="text-heading-md font-bold text-slate-900">¡Compra Exitosa!</h3>
+                  </div>
+                  <TicketCard reserva={doneReserva} salida={salida} />
+                  <div className="mt-8">
+                    <Button onClick={onClose} size="lg">Ir a mis viajes</Button>
+                  </div>
+                </motion.div>
+              ) : step === 'sillas' ? (
+                <motion.div key="sillas" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                  <SelectorSillas
+                    seats={salida.seats}
+                    initialSelected={selectedSeats}
+                    onChange={setSelectedSeats}
+                    info={{
+                      numero: salida.busNumero,
+                      origen: salida.origen,
+                      destino: salida.destino,
+                      horario: salida.horario,
+                      tarifa: salida.tarifa,
+                    }}
+                  />
+                </motion.div>
+              ) : step === 'datos' ? (
+                <motion.div key="datos" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="max-w-md mx-auto bg-white p-6 rounded-radius-2xl border border-slate-200 shadow-sm">
+                  <h3 className="font-bold text-slate-900 mb-4">Datos del pasajero principal</h3>
+                  <PasajeroForm value={pasajero} onChange={setPasajero} />
+                </motion.div>
+              ) : (
+                <motion.div key="pago" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="max-w-md mx-auto space-y-6">
+                  <div className="bg-white rounded-radius-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="bg-slate-900 p-4 text-white">
+                      <h4 className="font-bold text-body-sm mb-1">Resumen de compra</h4>
+                      <p className="text-caption text-slate-400">{salida.origen} → {salida.destino}</p>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between text-body-sm">
+                        <span className="text-slate-500">Asientos ({selectedSeats.length})</span>
+                        <span className="font-semibold text-slate-800">{selectedSeats.sort().join(', ')}</span>
+                      </div>
+                      <div className="flex justify-between text-body-sm">
+                        <span className="text-slate-500">Tarifa por asiento</span>
+                        <span className="font-semibold text-slate-800">${salida.tarifa.toLocaleString('es-CO')}</span>
+                      </div>
+                      <div className="flex justify-between text-body-sm border-t border-slate-100 pt-3 mt-1">
+                        <span className="font-bold text-slate-900">Total a pagar</span>
+                        <span className="font-bold text-heading-sm text-brand-600">
+                          ${total.toLocaleString('es-CO')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-radius-2xl border border-slate-200 shadow-sm p-4">
+                    <h4 className="font-bold text-slate-900 mb-3 text-body-sm flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-brand-500" /> Tarjeta de crédito
+                    </h4>
+                    {/* Mock card input */}
+                    <div className="space-y-3">
+                      <input type="text" placeholder="Número de tarjeta" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm" defaultValue="**** **** **** 4242" />
+                      <div className="grid grid-cols-2 gap-3">
+                        <input type="text" placeholder="MM/YY" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm" defaultValue="12/28" />
+                        <input type="text" placeholder="CVC" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm" defaultValue="***" />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {!doneReserva && (
+            <div className="px-6 py-4 border-t border-slate-200 bg-white flex justify-between items-center z-10 shadow-sm">
+              <Button variant="ghost" onClick={() => {
+                if (step === 'sillas') onClose();
+                else if (step === 'datos') setStep('sillas');
+                else setStep('datos');
+              }}>
+                {step === 'sillas' ? 'Cancelar' : 'Atrás'}
+              </Button>
+              <Button disabled={!canNext} onClick={() => {
+                if (step === 'sillas') setStep('datos');
+                else if (step === 'datos') setStep('pago');
+                else confirmar();
+              }}>
+                {step === 'pago' ? `Pagar $${total.toLocaleString('es-CO')}` : 'Continuar'}
+              </Button>
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
+/* ─────────────────── Main ── */
 
 export const ClienteDashboard = () => {
-  const viajeStep = 1; // Check-in
+  const { user } = useAuth();
+  const { salidas, getReservasPorCliente, getSalida } = useReservas();
+  const [ventaSalida, setVentaSalida] = useState<Salida | null>(null);
+
+  // Search state
+  const [origen, setOrigen] = useState('');
+  const [destino, setDestino] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
+  const misReservas = useMemo(
+    () => getReservasPorCliente(user?.email ?? ''),
+    [getReservasPorCliente, user?.email],
+  );
+
+  const upcomingReservas = misReservas.filter((r) => {
+    const s = getSalida(r.salidaId);
+    return s && (s.estado === 'Vendiendo' || s.estado === 'Abordando' || s.estado === 'Próximamente');
+  });
+
+  const historial = misReservas.filter((r) => !upcomingReservas.find((ur) => ur.id === r.id));
+
+  // Filtered salidas for booking
+  const searchResults = useMemo(() => {
+    if (!isSearching) return [];
+    return salidas.filter((s) => {
+      if (s.estado === 'En ruta') return false;
+      if (origen && !s.origen.toLowerCase().includes(origen.toLowerCase())) return false;
+      if (destino && !s.destino.toLowerCase().includes(destino.toLowerCase())) return false;
+      return true;
+    });
+  }, [isSearching, origen, destino, salidas]);
+
+  const doSearch = () => {
+    setIsSearching(true);
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-heading-md font-bold text-slate-900">Mi Portal</h2>
-        <p className="text-body-sm text-slate-500">Bienvenido de vuelta, revisa tus viajes y envíos activos.</p>
+        <h2 className="text-heading-md font-bold text-slate-900">Hola, {user?.name.split(' ')[0]}</h2>
+        <p className="text-body-sm text-slate-500">Bienvenido a tu portal de viajes y envíos.</p>
       </div>
 
-      {/* Top row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Próximo viaje con timeline */}
-        <motion.div
-          className="bg-brand-600 rounded-radius-2xl p-6 text-white shadow-shadow-md relative overflow-hidden md:col-span-2"
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/4" />
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <p className="text-brand-200 text-caption font-semibold uppercase tracking-wide mb-1">Próximo Viaje</p>
-              <h3 className="text-heading-md font-bold">{PROXIMOS_VIAJES[0].ruta}</h3>
-              <p className="text-brand-100 text-body-sm mt-0.5">{PROXIMOS_VIAJES[0].fecha} · Asiento {PROXIMOS_VIAJES[0].asiento}</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Left Col: Search + Upcoming */}
+        <div className="md:col-span-2 space-y-6">
+          {/* Hero Search Box */}
+          <motion.div
+            className="bg-brand-600 rounded-radius-2xl p-6 text-white shadow-shadow-md relative overflow-hidden"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+            <div className="relative z-10">
+              <h3 className="text-heading-sm font-bold mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5" /> ¿Adónde viajas hoy?
+              </h3>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 bg-white/10 rounded-radius-lg p-1 flex">
+                  <div className="relative flex-1">
+                    <MapPin className="absolute left-3 top-3 w-4 h-4 text-white/60" />
+                    <input
+                      type="text" placeholder="Origen" value={origen} onChange={(e) => setOrigen(e.target.value)}
+                      className="w-full bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 pl-9 pr-3 py-2 text-body-sm"
+                    />
+                  </div>
+                  <div className="w-px bg-white/20 mx-1 my-2" />
+                  <div className="relative flex-1">
+                    <MapPin className="absolute left-3 top-3 w-4 h-4 text-white/60" />
+                    <input
+                      type="text" placeholder="Destino" value={destino} onChange={(e) => setDestino(e.target.value)}
+                      className="w-full bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 pl-9 pr-3 py-2 text-body-sm"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={doSearch}
+                  className="bg-white text-brand-700 hover:bg-brand-50 px-6 py-2 rounded-radius-lg font-bold text-body-sm transition-colors shadow-sm"
+                >
+                  Buscar
+                </button>
+              </div>
+
+              {/* Search Results */}
+              <AnimatePresence>
+                {isSearching && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                    className="mt-6 space-y-3"
+                  >
+                    <h4 className="text-caption font-semibold text-brand-100 uppercase tracking-wide">
+                      {searchResults.length} salidas disponibles
+                    </h4>
+                    {searchResults.map((s) => {
+                      const { libre } = contarAsientos(s.seats);
+                      return (
+                        <div key={s.id} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-radius-xl p-4 flex items-center justify-between transition-colors">
+                          <div>
+                            <p className="font-bold text-body-sm">{s.origen} → {s.destino}</p>
+                            <p className="text-caption text-brand-100 flex items-center gap-2 mt-0.5">
+                              <Clock className="w-3 h-3" /> {s.horario}
+                              <span className="w-1 h-1 bg-white/40 rounded-full" />
+                              {s.duracion}
+                              <span className="w-1 h-1 bg-white/40 rounded-full" />
+                              {libre} sillas libres
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <span className="font-bold text-body-sm">${s.tarifa.toLocaleString('es-CO')}</span>
+                            <button
+                              disabled={libre === 0}
+                              onClick={() => setVentaSalida(s)}
+                              className="bg-white text-brand-700 px-4 py-1.5 rounded-radius-md font-bold text-caption hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+                            >
+                              {libre === 0 ? 'Agotado' : 'Comprar'}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <div className="bg-white/20 rounded-radius-lg px-3 py-1.5 text-caption font-semibold">{PROXIMOS_VIAJES[0].tipo}</div>
-          </div>
+          </motion.div>
 
-          {/* Progress timeline */}
-          <div className="flex items-center mt-6 mb-5">
-            {VIAJE_STEPS.map((s, i) => (
-              <div key={s} className="flex items-center flex-1 last:flex-none">
-                <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-caption font-bold border-2 transition-all ${i < viajeStep ? 'bg-white border-white text-brand-600' : i === viajeStep ? 'bg-white/30 border-white text-white' : 'bg-transparent border-white/40 text-white/50'}`}>
-                    {i < viajeStep ? <CheckCircle className="w-4 h-4" /> : i + 1}
-                  </div>
-                  <span className={`text-caption text-center leading-tight max-w-[56px] ${i === viajeStep ? 'text-white font-bold' : i < viajeStep ? 'text-brand-100' : 'text-white/40'}`}>{s}</span>
-                </div>
-                {i < VIAJE_STEPS.length - 1 && <div className={`flex-1 h-0.5 mx-1 mb-4 ${i < viajeStep ? 'bg-white' : 'bg-white/30'}`} />}
+          {/* Próximos Viajes */}
+          {upcomingReservas.length > 0 && (
+            <motion.div
+              className="space-y-4"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            >
+              <h3 className="font-bold text-slate-900">Tus próximos viajes</h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                {upcomingReservas.map((r) => {
+                  const s = getSalida(r.salidaId);
+                  if (!s) return null;
+                  return (
+                    <div key={r.id} className="bg-white border border-slate-200 shadow-shadow-sm rounded-radius-2xl p-5 hover:border-brand-300 transition-colors cursor-pointer group">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <p className="text-caption font-semibold text-brand-600 mb-0.5">{s.fecha} · {s.horario}</p>
+                          <h4 className="font-bold text-slate-900 text-body-md">{s.origen} → {s.destino}</h4>
+                        </div>
+                        <div className="w-8 h-8 bg-brand-50 rounded-full flex items-center justify-center group-hover:bg-brand-100 transition-colors">
+                          <Truck className="w-4 h-4 text-brand-500" />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-caption border-t border-slate-100 pt-3">
+                        <span className="text-slate-500">Asientos: <strong className="text-slate-700">{r.asientos.join(', ')}</strong></span>
+                        <span className="text-brand-600 font-semibold flex items-center gap-1 group-hover:underline">
+                          Ver tiquete <ArrowRight className="w-3 h-3" />
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-
-          <div className="flex gap-3">
-            <button className="flex-1 py-2 bg-white/20 hover:bg-white/30 rounded-radius-lg text-body-sm font-medium transition-colors backdrop-blur-sm flex items-center justify-center gap-2">
-              <Download className="w-4 h-4" /> Descargar tiquete
-            </button>
-            <button className="flex-1 py-2 bg-white text-brand-700 hover:bg-brand-50 rounded-radius-lg text-body-sm font-bold transition-colors flex items-center justify-center gap-2">
-              <CheckCircle className="w-4 h-4" /> Hacer check-in
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Acciones rápidas */}
-        <motion.div
-          className="bg-white rounded-radius-2xl p-6 border border-slate-200 shadow-shadow-sm"
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-        >
-          <h3 className="font-bold text-slate-900 mb-4">Acciones rápidas</h3>
-          <div className="space-y-2">
-            {[
-              { icon: <Calendar className="w-5 h-5 text-brand-600" />, label: 'Nuevo viaje', sub: 'Comprar tiquetes', bg: 'bg-brand-50 hover:bg-brand-100 border-brand-100 hover:border-brand-200' },
-              { icon: <Search className="w-5 h-5 text-purple-600" />, label: 'Rastrear paquete', sub: 'Ver estado de envío', bg: 'bg-purple-50 hover:bg-purple-100 border-purple-100 hover:border-purple-200' },
-              { icon: <Package className="w-5 h-5 text-emerald-600" />, label: 'Nuevo envío', sub: 'Cotizar y enviar', bg: 'bg-emerald-50 hover:bg-emerald-100 border-emerald-100 hover:border-emerald-200' },
-              { icon: <CreditCard className="w-5 h-5 text-amber-600" />, label: 'Mis pagos', sub: 'Historial y facturas', bg: 'bg-amber-50 hover:bg-amber-100 border-amber-100 hover:border-amber-200' },
-            ].map(a => (
-              <button key={a.label} className={`w-full p-3 ${a.bg} border rounded-radius-lg text-left transition-colors flex items-center gap-3 group`}>
-                <div className="flex-shrink-0">{a.icon}</div>
-                <div>
-                  <p className="font-semibold text-slate-900 text-body-sm">{a.label}</p>
-                  <p className="text-caption text-slate-500">{a.sub}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Envíos + Historial */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Mis envíos */}
-        <motion.div
-          className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden"
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-        >
-          <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 flex items-center gap-2"><Truck className="w-4 h-4 text-brand-500" />Mis envíos recientes</h3>
-            <button className="text-caption font-semibold text-brand-600 hover:text-brand-700">Ver todos</button>
-          </div>
-          <div className="divide-y divide-slate-50">
-            {ENVIOS.map((e) => (
-              <div key={e.guia} className="px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center">
-                    <Package className="w-4 h-4 text-slate-500" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-900 text-body-sm">{e.guia}</p>
-                    <p className="text-caption text-slate-500">→ {e.destino}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className={`text-caption font-semibold px-2 py-0.5 rounded-full ${e.color}`}>{e.estado}</span>
-                  <p className="text-caption text-slate-400 mt-1">{e.fecha}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Historial de viajes */}
-        <motion.div
-          className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden"
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-        >
-          <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 flex items-center gap-2"><MapPin className="w-4 h-4 text-brand-500" />Historial de viajes</h3>
-            <button className="text-caption font-semibold text-brand-600 hover:text-brand-700">Ver todos</button>
-          </div>
-          <div className="divide-y divide-slate-50">
-            {HISTORIAL_VIAJES.map((v, i) => (
-              <div key={i} className="px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-brand-50 rounded-full flex items-center justify-center">
-                    <Truck className="w-4 h-4 text-brand-500" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-900 text-body-sm">{v.ruta}</p>
-                    <p className="text-caption text-slate-500 flex items-center gap-1"><Clock className="w-3 h-3" />{v.fecha}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-slate-700 text-body-sm">{v.precio}</p>
-                  <p className="flex items-center gap-0.5 text-caption text-amber-500 justify-end">
-                    <Star className="w-3 h-3 fill-amber-400" />4.8
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="p-4 border-t border-slate-100">
-            <Button variant="outline" size="sm" fullWidth>Ver historial completo</Button>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Rastreo rápido */}
-      <motion.div
-        className="bg-white rounded-radius-2xl p-6 border border-slate-200 shadow-shadow-sm"
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-      >
-        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <Search className="w-4 h-4 text-brand-500" />Rastrear un paquete
-        </h3>
-        <div className="flex gap-3">
-          <input
-            type="text"
-            placeholder="Número de guía (Ej: ENV-99281)"
-            className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-slate-900"
-          />
-          <Button size="md">Buscar</Button>
+            </motion.div>
+          )}
         </div>
-      </motion.div>
+
+        {/* Right Col: Historial & Envíos */}
+        <div className="space-y-6">
+          <motion.div
+            className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          >
+            <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2"><Truck className="w-4 h-4 text-brand-500" />Mis envíos</h3>
+            </div>
+            <div className="divide-y divide-slate-50">
+              {ENVIOS.map((e) => (
+                <div key={e.guia} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                      <Package className="w-4 h-4 text-slate-500" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900 text-body-sm">{e.guia}</p>
+                      <p className="text-caption text-slate-500">→ {e.destino}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide ${e.color}`}>{e.estado}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          >
+            <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2"><MapPin className="w-4 h-4 text-brand-500" />Historial viajes</h3>
+            </div>
+            <div className="divide-y divide-slate-50">
+              {historial.length === 0 ? (
+                <div className="p-6 text-center text-caption text-slate-400">Aún no tienes viajes completados.</div>
+              ) : (
+                historial.map((r, i) => {
+                  const s = getSalida(r.salidaId);
+                  return (
+                    <div key={i} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                      <div>
+                        <p className="font-semibold text-slate-900 text-body-sm">{s ? `${s.origen} → ${s.destino}` : 'Viaje'}</p>
+                        <p className="text-caption text-slate-500 flex items-center gap-1"><Clock className="w-3 h-3" />{s?.fecha}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-slate-700 text-body-sm">${r.total.toLocaleString('es-CO')}</p>
+                        <p className="flex items-center gap-0.5 text-caption text-amber-500 justify-end">
+                          <Star className="w-3 h-3 fill-amber-400" />4.8
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {ventaSalida && (
+        <CompraDrawer
+          salida={ventaSalida}
+          onClose={() => setVentaSalida(null)}
+          userEmail={user?.email ?? ''}
+          userName={user?.name ?? ''}
+        />
+      )}
     </div>
   );
 };

@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Navigate, Link } from 'react-router-dom';
+import { Outlet, Navigate, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { LogOut, Truck, Bell, Settings, User as UserIcon, Menu, X, BarChart2, Package, Calendar, CreditCard, Layers, FileText } from 'lucide-react';
+import { LogOut, Truck, Bell, Settings, User as UserIcon, Menu, X, BarChart2, Package, Calendar, CreditCard, Layers, FileText, MapPin } from 'lucide-react';
 import { cn } from '@/utils';
 
 // Nav items per role
-const NAV_ITEMS: Record<string, { icon: React.ReactNode; label: string }[]> = {
+const NAV_ITEMS: Record<string, { icon: React.ReactNode; label: string; to?: string }[]> = {
   ADMIN: [
-    { icon: <BarChart2 className="w-4 h-4" />, label: 'Gerencia' },
+    { icon: <BarChart2 className="w-4 h-4" />, label: 'Gerencia', to: '/dashboard' },
+    { icon: <MapPin className="w-4 h-4" />, label: 'Rutas y Métricas', to: '/dashboard/rutas' },
     { icon: <Truck className="w-4 h-4" />, label: 'Flota' },
     { icon: <FileText className="w-4 h-4" />, label: 'Reportes' },
     { icon: <UserIcon className="w-4 h-4" />, label: 'Usuarios' },
@@ -39,7 +40,8 @@ const useLiveClock = () => {
 export const DashboardLayout = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeNav, setActiveNav] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
   const now = useLiveClock();
 
   if (!isAuthenticated) {
@@ -106,21 +108,29 @@ export const DashboardLayout = () => {
 
           {/* Role-based nav */}
           <nav className="space-y-1">
-            {navItems.map((item, idx) => (
-              <button
-                key={item.label}
-                onClick={() => setActiveNav(idx)}
-                className={cn(
-                  "w-full px-3 py-2.5 rounded-radius-lg font-medium text-body-sm flex items-center gap-3 transition-colors text-left",
-                  activeNav === idx
-                    ? "bg-brand-600 text-white shadow-shadow-sm"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                )}
-              >
-                {item.icon}
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const isActive = item.to
+                ? location.pathname === item.to
+                : false;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    if (item.to) navigate(item.to);
+                    setSidebarOpen(false);
+                  }}
+                  className={cn(
+                    "w-full px-3 py-2.5 rounded-radius-lg font-medium text-body-sm flex items-center gap-3 transition-colors text-left",
+                    isActive
+                      ? "bg-brand-600 text-white shadow-shadow-sm"
+                      : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
         </div>
 

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Beaker, AlertTriangle } from 'lucide-react';
+import { Beaker, AlertTriangle, TrendingUp } from 'lucide-react';
 import ShapeGrid from '@/components/ui/ShapeGrid';
 import { Button } from '@/components/ui';
+import SimpleGraph, { type DataPoint } from '@/components/ui/SimpleGraph';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Shape = 'square' | 'hexagon' | 'circle' | 'triangle';
@@ -95,6 +96,141 @@ const ShapeGridDemo = () => {
   );
 };
 
+// ── Demo: SimpleGraph ─────────────────────────────────────────────────────────
+const DEFAULT_DATA: DataPoint[] = [
+  { label: 'Lun', value: 55 },
+  { label: 'Mar', value: 72 },
+  { label: 'Mié', value: 48 },
+  { label: 'Jue', value: 90 },
+  { label: 'Vie', value: 68 },
+  { label: 'Sáb', value: 85 },
+  { label: 'Dom', value: 100 },
+];
+
+const SimpleGraphDemo = () => {
+  const [color, setColor] = useState('#f97316');
+  const [gradientFrom, setGradientFrom] = useState('#f97316');
+  const [height, setHeight] = useState(200);
+  const [animated, setAnimated] = useState(true);
+  const [showDots, setShowDots] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(true);
+  const [dataRaw, setDataRaw] = useState(
+    DEFAULT_DATA.map((d) => d.value).join(', ')
+  );
+  const [key, setKey] = useState(0);
+
+  const parsedData: DataPoint[] = DEFAULT_DATA.map((d, i) => ({
+    label: d.label,
+    value: Number(dataRaw.split(',')[i]?.trim()) || d.value,
+  }));
+
+  const reAnimate = () => setKey((k) => k + 1);
+
+  const Toggle = ({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) => (
+    <label className="flex items-center gap-2 cursor-pointer select-none">
+      <div
+        onClick={() => onChange(!value)}
+        className={`w-10 h-5 rounded-full transition-colors ${value ? 'bg-brand-500' : 'bg-slate-200'} relative`}
+      >
+        <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${value ? 'translate-x-5' : ''}`} />
+      </div>
+      <span className="text-body-sm text-slate-700">{label}</span>
+    </label>
+  );
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-6">
+      {/* Preview */}
+      <div className="bg-white rounded-radius-2xl border border-slate-200 p-6 shadow-shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-brand-500" />
+            <span className="text-body-sm font-semibold text-slate-700">Preview en vivo</span>
+          </div>
+          <button
+            onClick={reAnimate}
+            className="text-caption font-semibold text-brand-600 hover:text-brand-700 border border-brand-200 px-2.5 py-1 rounded-radius-md hover:bg-brand-50 transition-colors"
+          >
+            ↺ Re-animar
+          </button>
+        </div>
+        <SimpleGraph
+          key={key}
+          data={parsedData}
+          color={color}
+          gradientFrom={gradientFrom}
+          gradientTo="transparent"
+          height={height}
+          animated={animated}
+          showDots={showDots}
+          showTooltip={showTooltip}
+          formatValue={(v) => `${v}%`}
+        />
+      </div>
+
+      {/* Controls */}
+      <div className="bg-white rounded-radius-2xl border border-slate-200 p-6 shadow-shadow-sm space-y-5">
+        {/* Data editor */}
+        <div>
+          <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide">
+            Valores (Lun–Dom, separados por coma)
+          </label>
+          <input
+            type="text"
+            value={dataRaw}
+            onChange={(e) => { setDataRaw(e.target.value); reAnimate(); }}
+            className="mt-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-radius-md text-slate-900 text-body-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+        </div>
+
+        {/* Height */}
+        <div>
+          <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide">
+            Altura — {height}px
+          </label>
+          <input
+            type="range" min={80} max={360} step={8} value={height}
+            onChange={(e) => setHeight(Number(e.target.value))}
+            className="w-full mt-1 accent-brand-600"
+          />
+        </div>
+
+        {/* Colors */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide">Line Color</label>
+            <div className="flex gap-2 mt-1 items-center">
+              <input type="color" value={color} onChange={(e) => setColor(e.target.value)}
+                className="w-10 h-10 rounded-md border border-slate-200 cursor-pointer" />
+              <span className="text-body-sm text-slate-400 font-mono">{color}</span>
+            </div>
+          </div>
+          <div>
+            <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide">Gradient Color</label>
+            <div className="flex gap-2 mt-1 items-center">
+              <input type="color" value={gradientFrom} onChange={(e) => setGradientFrom(e.target.value)}
+                className="w-10 h-10 rounded-md border border-slate-200 cursor-pointer" />
+              <span className="text-body-sm text-slate-400 font-mono">{gradientFrom}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Toggles */}
+        <div className="space-y-3 pt-1 border-t border-slate-100">
+          <Toggle label="Animado" value={animated} onChange={setAnimated} />
+          <Toggle label="Mostrar puntos" value={showDots} onChange={setShowDots} />
+          <Toggle label="Mostrar tooltip" value={showTooltip} onChange={setShowTooltip} />
+        </div>
+
+        {/* Code snippet */}
+        <div className="bg-slate-900 rounded-radius-lg p-4 text-caption text-emerald-400 font-mono leading-relaxed overflow-x-auto">
+          {`<SimpleGraph\n  data={data}\n  color="${color}"\n  gradientFrom="${gradientFrom}"\n  height={${height}}\n  animated={${animated}}\n  showDots={${showDots}}\n  showTooltip={${showTooltip}}\n/>`}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ── Demo: Buttons ─────────────────────────────────────────────────────────────
 const ButtonsDemo = () => (
   <div className="bg-white rounded-radius-2xl border border-slate-200 p-8 shadow-shadow-sm space-y-6">
@@ -146,6 +282,10 @@ export const Demo = () => {
           </div>
           <p className="text-body-md text-slate-500 ml-13">Explora y configura todos los componentes del Design System en tiempo real.</p>
         </motion.div>
+
+        <Section title="Simple Graph — Gráfica animada con interacciones">
+          <SimpleGraphDemo />
+        </Section>
 
         <Section title="ShapeGrid — Animated Background">
           <ShapeGridDemo />

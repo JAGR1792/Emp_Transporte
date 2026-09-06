@@ -9,6 +9,7 @@ import { Servicios } from './pages/Servicios';
 import { Demo } from './pages/Demo';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { DashboardRouter } from './pages/dashboards/DashboardRouter';
+import { RutasMetricas } from './pages/dashboards/RutasMetricas';
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
       {/* Protected Routes with DashboardLayout */}
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<DashboardRouter />} />
+        <Route path="rutas" element={<RutasMetricas />} />
       </Route>
     </Routes>
   );
