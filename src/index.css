@@ -21,10 +21,12 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   body {
     @apply font-body text-slate-700 bg-white antialiased;
+    overflow-x: hidden;
   }
 
   * {

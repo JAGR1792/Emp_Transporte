@@ -54,7 +54,7 @@ const ENVIOS_MOCK: Record<string, Envio> = {
 };
 
 const STEPS_ESTADO = ['recibido', 'transito', 'terminal', 'entregado'] as const;
-const STEP_LABELS: Record<string, string> = { recibido: 'Recibido', transito: 'En tránsito', terminal: 'En terminal destino', entregado: 'Entregado' };
+const STEP_LABELS: Record<string, string> = { recibido: 'Recibido', transito: 'En tránsito', terminal: 'En terminal', entregado: 'Entregado' };
 const STEP_ICONS: Record<string, React.ReactNode> = {
   recibido: <Package className="w-5 h-5" />,
   transito: <Truck className="w-5 h-5" />,
@@ -83,7 +83,7 @@ export const Rastreo = () => {
   const stepIdx = envio ? STEPS_ESTADO.indexOf(envio.estado) : -1;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 overflow-x-hidden">
       {/* Hero */}
       <div className="bg-gradient-to-r from-slate-900 to-brand-900 py-14 px-4">
         <div className="container-page max-w-2xl mx-auto text-center">
@@ -92,16 +92,16 @@ export const Rastreo = () => {
           </motion.h1>
           <p className="text-slate-400 mb-8 text-body-lg">Seguimiento en tiempo real de tu paquete</p>
 
-          <motion.div className="flex gap-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <motion.div className="flex flex-col sm:flex-row gap-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <input
               type="text"
               value={guia}
               onChange={e => setGuia(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
               placeholder="Ej: ENV-99281 o TRN-481920"
-              className="flex-1 px-5 py-3.5 bg-white/10 border border-white/20 rounded-radius-xl focus:outline-none focus:ring-2 focus:ring-white/50 text-white placeholder-white/40 backdrop-blur-sm"
+              className="flex-1 px-5 py-4 bg-white/10 border border-white/20 rounded-radius-xl focus:outline-none focus:ring-2 focus:ring-white/50 text-white placeholder-white/40 backdrop-blur-sm text-base"
             />
-            <Button size="lg" loading={loading} leftIcon={<Search className="w-5 h-5" />} onClick={handleSearch}>
+            <Button size="lg" loading={loading} leftIcon={<Search className="w-5 h-5" />} onClick={handleSearch} className="w-full sm:w-auto">
               Rastrear
             </Button>
           </motion.div>
@@ -142,19 +142,19 @@ export const Rastreo = () => {
             </div>
 
             {/* Progress steps */}
-            <div className="bg-white rounded-radius-2xl border border-slate-200 p-6 shadow-shadow-sm">
-              <h3 className="font-bold text-slate-900 mb-6">Estado del envío</h3>
-              <div className="flex items-center justify-between">
+            <div className="bg-white rounded-radius-2xl border border-slate-200 p-5 lg:p-6 shadow-shadow-sm">
+              <h3 className="font-bold text-slate-900 mb-5 lg:mb-6">Estado del envío</h3>
+              <div className="flex flex-wrap items-center justify-center gap-3 lg:gap-0 lg:justify-between">
                 {STEPS_ESTADO.map((s, i) => (
-                  <div key={s} className="flex items-center flex-1">
+                  <div key={s} className="flex items-center flex-1 flex-shrink-0 min-w-[80px] lg:min-w-0">
                     <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${i < stepIdx ? 'bg-emerald-500 border-emerald-500 text-white' : i === stepIdx ? 'bg-brand-600 border-brand-600 text-white scale-110 shadow-shadow-md' : 'bg-white border-slate-200 text-slate-300'}`}>
-                        {i < stepIdx ? <CheckCircle className="w-5 h-5" /> : STEP_ICONS[s]}
+                      <div className={`w-9 h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center border-2 transition-all ${i < stepIdx ? 'bg-emerald-500 border-emerald-500 text-white' : i === stepIdx ? 'bg-brand-600 border-brand-600 text-white scale-110 shadow-shadow-md' : 'bg-white border-slate-200 text-slate-300'}`}>
+                        {i < stepIdx ? <CheckCircle className="w-4 h-4 lg:w-5 lg:h-5" /> : STEP_ICONS[s]}
                       </div>
-                      <span className={`text-caption text-center leading-tight max-w-[64px] ${i === stepIdx ? 'font-bold text-brand-600' : i < stepIdx ? 'text-emerald-600 font-medium' : 'text-slate-400'}`}>{STEP_LABELS[s]}</span>
+                      <span className={`text-caption text-center leading-tight max-w-[80px] ${i === stepIdx ? 'font-bold text-brand-600' : i < stepIdx ? 'text-emerald-600 font-medium' : 'text-slate-400'}`}>{STEP_LABELS[s]}</span>
                     </div>
                     {i < STEPS_ESTADO.length - 1 && (
-                      <div className={`flex-1 h-0.5 mx-1 ${i < stepIdx ? 'bg-emerald-400' : 'bg-slate-200'}`} />
+                      <div className={`w-8 lg:flex-1 h-0.5 mx-1 ${i < stepIdx ? 'bg-emerald-400' : 'bg-slate-200'}`} />
                     )}
                   </div>
                 ))}
@@ -162,19 +162,19 @@ export const Rastreo = () => {
             </div>
 
             {/* Timeline */}
-            <div className="bg-white rounded-radius-2xl border border-slate-200 p-6 shadow-shadow-sm">
-              <h3 className="font-bold text-slate-900 mb-6">Historial de eventos</h3>
+            <div className="bg-white rounded-radius-2xl border border-slate-200 p-5 lg:p-6 shadow-shadow-sm">
+              <h3 className="font-bold text-slate-900 mb-5 lg:mb-6">Historial de eventos</h3>
               <div className="space-y-0">
                 {envio.eventos.map((ev, i) => (
-                  <div key={i} className="flex gap-4 pb-6 last:pb-0 relative">
+                  <div key={i} className="flex gap-3 lg:gap-4 pb-5 last:pb-0 relative">
                     <div className="flex flex-col items-center">
-                      <div className={`w-4 h-4 rounded-full border-2 z-10 flex-shrink-0 mt-0.5 ${ev.tipo === 'ok' ? 'bg-emerald-500 border-emerald-500' : ev.tipo === 'current' ? 'bg-brand-600 border-brand-600 ring-4 ring-brand-100' : 'bg-amber-400 border-amber-400'}`} />
+                      <div className={`w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full border-2 z-10 flex-shrink-0 mt-0.5 ${ev.tipo === 'ok' ? 'bg-emerald-500 border-emerald-500' : ev.tipo === 'current' ? 'bg-brand-600 border-brand-600 ring-4 ring-brand-100' : 'bg-amber-400 border-amber-400'}`} />
                       {i < envio.eventos.length - 1 && <div className="w-0.5 flex-1 bg-slate-200 mt-1" />}
                     </div>
-                    <div className="pb-2">
+                    <div className="pb-2 min-w-0">
                       <p className={`font-semibold text-body-sm ${ev.tipo === 'current' ? 'text-brand-700' : 'text-slate-900'}`}>{ev.descripcion}</p>
-                      <p className="text-caption text-slate-500 flex items-center gap-1 mt-0.5">
-                        <Clock className="w-3 h-3" />{ev.fecha} {ev.hora} — <MapPin className="w-3 h-3" />{ev.ciudad}
+                      <p className="text-caption text-slate-500 flex items-center gap-1 mt-0.5 flex-wrap">
+                        <Clock className="w-3 h-3 flex-shrink-0" />{ev.fecha} {ev.hora} — <MapPin className="w-3 h-3 flex-shrink-0" />{ev.ciudad}
                       </p>
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export const Rastreo = () => {
             </div>
 
             {/* Info */}
-            <div className="bg-white rounded-radius-2xl border border-slate-200 p-6 shadow-shadow-sm">
+            <div className="bg-white rounded-radius-2xl border border-slate-200 p-5 lg:p-6 shadow-shadow-sm">
               <h3 className="font-bold text-slate-900 mb-4">Detalles del envío</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-body-sm">
                 {[['Remitente', envio.remitente], ['Destinatario', envio.destinatario], ['Peso', envio.peso], ['Origen', envio.origen], ['Destino', envio.destino], ['Tipo', envio.contenido]].map(([k, v]) => (

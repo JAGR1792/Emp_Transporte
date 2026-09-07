@@ -8,14 +8,14 @@ import { useReservas, contarAsientos, type Salida } from '@/context/ReservasCont
 /* ─────────────────── KPI ── */
 const KPI = ({ title, value, change, changeType, icon, color, bg }: { title: string; value: string; change: string; changeType: 'positive' | 'negative' | 'neutral'; icon: React.ReactNode; color: string; bg: string }) => (
   <motion.div
-    className="bg-white rounded-radius-xl p-5 border border-slate-200 shadow-shadow-sm relative overflow-hidden"
+    className="bg-white rounded-radius-xl p-4 lg:p-5 border border-slate-200 shadow-shadow-sm relative overflow-hidden min-w-0"
     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
   >
-    <div className={`absolute -top-4 -right-4 w-20 h-20 ${bg} rounded-full opacity-40`} />
-    <div className={`w-10 h-10 ${bg} ${color} rounded-radius-lg flex items-center justify-center mb-3`}>{icon}</div>
-    <p className="text-caption font-medium text-slate-500 mb-1">{title}</p>
-    <p className="text-heading-md font-bold text-slate-900 mb-1">{value}</p>
-    <span className={`text-caption font-semibold px-2 py-0.5 rounded-full ${changeType === 'positive' ? 'bg-emerald-100 text-emerald-700' : changeType === 'negative' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'}`}>
+    <div className={`absolute -top-3 -right-3 w-16 h-16 lg:w-20 lg:h-20 ${bg} rounded-full opacity-40 hidden sm:block`} />
+    <div className={`w-9 h-9 lg:w-10 lg:h-10 ${bg} ${color} rounded-radius-lg flex items-center justify-center mb-3`}>{icon}</div>
+    <p className="text-caption font-medium text-slate-500 mb-1 truncate">{title}</p>
+    <p className="text-heading-sm lg:text-heading-md font-bold text-slate-900 mb-1 truncate">{value}</p>
+    <span className={`text-caption font-semibold px-2 py-0.5 rounded-full ${changeType === 'positive' ? 'bg-emerald-100 text-emerald-700' : changeType === 'negative' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'} whitespace-nowrap`}>
       {change}
     </span>
   </motion.div>
@@ -67,7 +67,7 @@ const ChartCard = () => {
       className="bg-white rounded-radius-2xl p-6 border border-slate-200 shadow-shadow-sm lg:col-span-2"
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
           <h3 className="font-bold text-slate-900">Tendencia Semanal</h3>
           <p className="text-caption text-slate-400">Esta semana (índice normalizado)</p>
@@ -133,7 +133,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* KPIs row 1 */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPI title="Ingresos Hoy" value="$15.4M" change="↑ 12% vs ayer" changeType="positive" icon={<TrendingUp className="w-5 h-5" />} color="text-emerald-600" bg="bg-emerald-100" />
         <KPI title="Buses en Ruta" value={String(salidas.length)} change={`${occupancyRate}% ocupación`} changeType="neutral" icon={<Truck className="w-5 h-5" />} color="text-blue-600" bg="bg-blue-100" />
         <KPI title="Pasajeros Hoy" value={String(totalOccupied)} change="↑ 5% vs ayer" changeType="positive" icon={<Users className="w-5 h-5" />} color="text-brand-600" bg="bg-brand-100" />
@@ -141,7 +141,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* KPIs row 2 */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPI title="Encomiendas Hoy" value="1,840" change="↑ 8% vs ayer" changeType="positive" icon={<Package className="w-5 h-5" />} color="text-purple-600" bg="bg-purple-100" />
         <KPI title="Ocupación Prom." value={`${occupancyRate}%`} change="↑ vs 78% sem. ant." changeType="positive" icon={<Gauge className="w-5 h-5" />} color="text-cyan-600" bg="bg-cyan-100" />
         <KPI title="Conductores Activos" value="138" change="4 en descanso" changeType="neutral" icon={<UserCheck className="w-5 h-5" />} color="text-teal-600" bg="bg-teal-100" />
@@ -177,7 +177,7 @@ export const AdminDashboard = () => {
 
       {/* Tabla de flota real */}
       <motion.div
-        className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden"
+        className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden min-w-0"
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
       >
         <div className="p-5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">

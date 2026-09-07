@@ -385,7 +385,11 @@ const ShapeGrid = ({
     };
   }, [direction, speed, borderColor, hoverFillColor, squareSize, shape, hoverTrailAmount]);
 
-  return <canvas ref={canvasRef} className={`shapegrid-canvas ${className}`}></canvas>;
+  return (
+    <div className={`w-full h-full overflow-hidden ${className}`}>
+      <canvas ref={canvasRef} className="shapegrid-canvas w-full h-full"></canvas>
+    </div>
+  );
 };
 
 export default ShapeGrid;

@@ -65,7 +65,7 @@ export const ClienteDashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Col: Search + Upcoming */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-6 min-w-0">
           {/* Hero Search Box */}
           <motion.div
             className="bg-brand-600 rounded-radius-2xl p-4 md:p-6 text-white shadow-shadow-md relative overflow-hidden"
@@ -115,23 +115,23 @@ export const ClienteDashboard = () => {
                     {searchResults.map((s) => {
                       const { libre } = contarAsientos(s.seats);
                       return (
-                        <div key={s.id} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-radius-xl p-3 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-0 transition-colors">
-                          <div>
-                            <p className="font-bold text-body-sm md:text-base">{s.origen} → {s.destino}</p>
-                            <p className="text-caption md:text-sm text-brand-100 flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 md:mt-0.5">
-                              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {s.horario}</span>
-                              <span className="hidden md:inline w-1 h-1 bg-white/40 rounded-full" />
-                              <span>{s.duracion}</span>
-                              <span className="hidden md:inline w-1 h-1 bg-white/40 rounded-full" />
-                              <span className="w-full md:w-auto font-medium">{libre} sillas libres</span>
+                        <div key={s.id} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-radius-xl p-3 md:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors min-w-0">
+                          <div className="min-w-0">
+                            <p className="font-bold text-body-sm sm:text-base truncate">{s.origen} → {s.destino}</p>
+                            <p className="text-caption sm:text-sm text-brand-100 flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 mt-0.5">
+                              <span className="flex items-center gap-1 whitespace-nowrap"><Clock className="w-3 h-3 flex-shrink-0" /> {s.horario}</span>
+                              <span className="hidden sm:inline w-1 h-1 bg-white/40 rounded-full flex-shrink-0" />
+                              <span className="whitespace-nowrap">{s.duracion}</span>
+                              <span className="hidden sm:inline w-1 h-1 bg-white/40 rounded-full flex-shrink-0" />
+                              <span className="w-full sm:w-auto font-medium whitespace-nowrap">{libre} sillas libres</span>
                             </p>
                           </div>
-                          <div className="flex items-center justify-between md:justify-end gap-4 border-t border-white/10 pt-2 md:border-0 md:pt-0">
-                            <span className="font-bold text-body-md md:text-body-sm">${s.tarifa.toLocaleString('es-CO')}</span>
+                          <div className="flex items-center justify-between gap-4 border-t border-white/10 pt-2 sm:border-0 sm:pt-0 shrink-0">
+                            <span className="font-bold text-body-md sm:text-body-sm whitespace-nowrap">${s.tarifa.toLocaleString('es-CO')}</span>
                             <button
                               disabled={libre === 0}
                               onClick={() => setVentaSalida(s)}
-                              className="bg-white text-brand-700 px-6 py-2 md:px-4 md:py-1.5 rounded-radius-md font-bold text-body-sm md:text-caption hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+                              className="bg-white text-brand-700 px-4 py-1.5 rounded-radius-md font-bold text-body-sm sm:text-caption hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100 whitespace-nowrap shrink-0"
                             >
                               {libre === 0 ? 'Agotado' : 'Comprar'}
                             </button>
@@ -152,24 +152,24 @@ export const ClienteDashboard = () => {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             >
               <h3 className="font-bold text-slate-900">Tus próximos viajes</h3>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {upcomingReservas.map((r) => {
                   const s = getSalida(r.salidaId);
                   if (!s) return null;
                   return (
-                    <div key={r.id} className="bg-white border border-slate-200 shadow-shadow-sm rounded-radius-2xl p-5 hover:border-brand-300 transition-colors cursor-pointer group">
+                    <div key={r.id} className="bg-white border border-slate-200 shadow-shadow-sm rounded-radius-2xl p-5 hover:border-brand-300 transition-colors cursor-pointer group min-w-0">
                       <div className="flex justify-between items-start mb-3">
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-caption font-semibold text-brand-600 mb-0.5">{s.fecha} · {s.horario}</p>
-                          <h4 className="font-bold text-slate-900 text-body-md">{s.origen} → {s.destino}</h4>
+                          <h4 className="font-bold text-slate-900 text-body-md truncate">{s.origen} → {s.destino}</h4>
                         </div>
-                        <div className="w-8 h-8 bg-brand-50 rounded-full flex items-center justify-center group-hover:bg-brand-100 transition-colors">
+                        <div className="w-8 h-8 bg-brand-50 rounded-full flex items-center justify-center group-hover:bg-brand-100 transition-colors shrink-0">
                           <Truck className="w-4 h-4 text-brand-500" />
                         </div>
                       </div>
                       <div className="flex items-center justify-between text-caption border-t border-slate-100 pt-3">
-                        <span className="text-slate-500">Asientos: <strong className="text-slate-700">{r.asientos.join(', ')}</strong></span>
-                        <span className="text-brand-600 font-semibold flex items-center gap-1 group-hover:underline">
+                        <span className="text-slate-500 truncate">Asientos: <strong className="text-slate-700">{r.asientos.join(', ')}</strong></span>
+                        <span className="text-brand-600 font-semibold flex items-center gap-1 group-hover:underline whitespace-nowrap shrink-0">
                           Ver tiquete <ArrowRight className="w-3 h-3" />
                         </span>
                       </div>
@@ -182,7 +182,7 @@ export const ClienteDashboard = () => {
         </div>
 
         {/* Right Col: Historial & Envíos */}
-        <div className="space-y-6">
+        <div className="space-y-6 min-w-0">
           <motion.div
             className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}

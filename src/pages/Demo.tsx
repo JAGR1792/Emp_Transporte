@@ -264,7 +264,7 @@ const ButtonsDemo = () => (
 // ── Main Demo Page ─────────────────────────────────────────────────────────────
 export const Demo = () => {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 overflow-x-hidden">
       {/* Dev banner */}
       <div className="bg-amber-400 px-4 py-2 text-center text-amber-900 text-body-sm font-semibold flex items-center justify-center gap-2 sticky top-0 z-50">
         <AlertTriangle className="w-4 h-4" />

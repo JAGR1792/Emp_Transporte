@@ -18,15 +18,15 @@ const KPI = ({ title, value, icon, color, bg, sub }: {
   color: string; bg: string; sub?: string;
 }) => (
   <motion.div
-    className="bg-white rounded-radius-xl p-5 border border-slate-200 shadow-shadow-sm"
+    className="bg-white rounded-radius-xl p-4 lg:p-5 border border-slate-200 shadow-shadow-sm min-w-0"
     initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
   >
-    <div className={`w-10 h-10 ${bg} ${color} rounded-radius-lg flex items-center justify-center mb-3`}>
+    <div className={`w-9 h-9 lg:w-10 lg:h-10 ${bg} ${color} rounded-radius-lg flex items-center justify-center mb-3`}>
       {icon}
     </div>
-    <p className="text-caption font-medium text-slate-500 mb-0.5">{title}</p>
-    <p className="text-heading-sm font-bold text-slate-900">{value}</p>
-    {sub && <p className="text-caption text-slate-400 mt-0.5">{sub}</p>}
+    <p className="text-caption font-medium text-slate-500 mb-0.5 truncate">{title}</p>
+    <p className="text-heading-sm font-bold text-slate-900 truncate">{value}</p>
+    {sub && <p className="text-caption text-slate-400 mt-0.5 truncate">{sub}</p>}
   </motion.div>
 );
 
@@ -129,8 +129,8 @@ export const OperarioDashboard = () => {
         </div>
 
         {/* Próximas salidas */}
-        <div className="lg:col-span-3 bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between gap-3">
+        <div className="lg:col-span-3 bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden min-w-0">
+          <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <h3 className="font-bold text-slate-900 shrink-0">Próximas Salidas</h3>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-2 w-4 h-4 text-slate-400" />
@@ -187,8 +187,8 @@ export const OperarioDashboard = () => {
       </div>
 
       {/* Transacciones del turno */}
-      <div className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+      <div className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden min-w-0">
+        <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
           <h3 className="font-bold text-slate-900">Transacciones del turno</h3>
           <span className="text-body-sm font-bold text-brand-600">${totalTurno.toLocaleString('es-CO')}</span>
         </div>

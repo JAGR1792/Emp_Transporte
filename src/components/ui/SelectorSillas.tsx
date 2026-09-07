@@ -92,8 +92,9 @@ const SeatIcon = ({
   return (
     <svg
       viewBox="0 0 36 44"
-      width="48"
-      height="58"
+      width="100%"
+      height="auto"
+      className="max-w-[48px] drop-shadow-sm"
       xmlns="http://www.w3.org/2000/svg"
       style={{ overflow: 'visible' }}
     >
@@ -155,8 +156,8 @@ const SeatIcon = ({
 
 /* ─────────────────── Driver seat ── */
 const DriverSeat = () => (
-  <div className="flex flex-col items-center gap-1 opacity-60">
-    <svg viewBox="0 0 36 44" width="44" height="54">
+  <div className="flex flex-col items-center gap-1 opacity-60 w-9 sm:w-11">
+    <svg viewBox="0 0 36 44" width="100%" height="auto">
       <rect x="4" y="1" width="28" height="9" rx="4" fill="#334155" />
       <rect x="2" y="8" width="32" height="24" rx="3" fill="#475569" stroke="#334155" strokeWidth="1.5" />
       <rect x="4" y="30" width="28" height="12" rx="3" fill="#475569" stroke="#334155" strokeWidth="1.5" />
@@ -296,7 +297,7 @@ export default function SelectorSillas({
         className={`bg-slate-50 border-2 border-slate-200 ${info ? '' : 'rounded-t-radius-xl'} rounded-b-radius-xl p-4 md:p-5 overflow-x-auto touch-pan-x snap-x`}
         style={{ background: 'linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%)' }}
       >
-        <div className="w-fit min-w-[320px] mx-auto px-2 pb-4">
+        <div className="w-fit mx-auto px-1 sm:px-2 pb-4">
           {/* FRENTE label + steering wheel */}
         <div className="flex items-center justify-center mb-4">
           <div className="flex-1 border-t-2 border-dashed border-slate-300" />
@@ -317,19 +318,19 @@ export default function SelectorSillas({
         </div>
 
         {/* Seat grid */}
-        <div className="flex flex-col gap-3 min-w-[300px]">
+        <div className="flex flex-col gap-2 sm:gap-3 min-w-0">
           {/* Column headers */}
-          <div className="flex items-center gap-3 mb-1">
+          <div className="flex items-center gap-2 sm:gap-3 mb-1">
             <div className="w-5 shrink-0" /> {/* row label spacer */}
-            <div className="w-12 text-center text-caption text-slate-400 font-bold">A</div>
-            <div className="w-12 text-center text-caption text-slate-400 font-bold">B</div>
-            <div className="w-8 shrink-0" /> {/* aisle */}
-            <div className="w-12 text-center text-caption text-slate-400 font-bold">C</div>
-            <div className="w-12 text-center text-caption text-slate-400 font-bold">D</div>
+            <div className="w-9 sm:w-12 text-center text-caption text-slate-400 font-bold">A</div>
+            <div className="w-9 sm:w-12 text-center text-caption text-slate-400 font-bold">B</div>
+            <div className="w-6 sm:w-8 shrink-0" /> {/* aisle */}
+            <div className="w-9 sm:w-12 text-center text-caption text-slate-400 font-bold">C</div>
+            <div className="w-9 sm:w-12 text-center text-caption text-slate-400 font-bold">D</div>
           </div>
 
           {ROWS.map((row) => (
-            <div key={row} className="flex items-center gap-3">
+            <div key={row} className="flex items-center gap-2 sm:gap-3">
               {/* Row number */}
               <div className="w-5 text-center text-caption text-slate-400 font-semibold shrink-0">
                 {ROWS.indexOf(row) + 1}
@@ -360,7 +361,7 @@ export default function SelectorSillas({
                         ? `Silla ${id} — No disponible`
                         : `Silla ${id} — Libre`
                     }
-                    className={`relative focus:outline-none ${
+                    className={`relative focus:outline-none w-9 sm:w-12 aspect-[36/44] ${
                       !readOnly && status === 'libre' ? 'cursor-pointer' : 'cursor-default'
                     } ${isAdj ? 'drop-shadow-lg' : ''}`}
                     style={{
@@ -380,7 +381,7 @@ export default function SelectorSillas({
               })}
 
               {/* Aisle */}
-              <div className="w-8 shrink-0 flex flex-col items-center gap-0.5">
+              <div className="w-6 sm:w-8 shrink-0 flex flex-col items-center gap-0.5">
                 <div className="w-px h-full bg-slate-200" />
               </div>
 
@@ -407,7 +408,7 @@ export default function SelectorSillas({
                         ? `Silla ${id} — Ocupada`
                         : `Silla ${id} — Libre`
                     }
-                    className={`relative focus:outline-none ${
+                    className={`relative focus:outline-none w-9 sm:w-12 aspect-[36/44] ${
                       !readOnly && status === 'libre' ? 'cursor-pointer' : 'cursor-default'
                     }`}
                     style={{

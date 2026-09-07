@@ -57,7 +57,7 @@ export const DashboardLayout = () => {
   const roleLabel: Record<string, string> = { ADMIN: 'Vista Gerencial', OPERARIO: 'Portal Operativo', CLIENTE: 'Mi Portal' };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 flex overflow-x-hidden">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -148,33 +148,33 @@ export const DashboardLayout = () => {
       {/* Main content */}
       <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
         {/* Topbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
-          <div className="flex items-center gap-4">
+        <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
+          <div className="flex items-center gap-3">
             <button
-              className="md:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-radius-lg"
+              className="md:hidden p-2 -ml-1 text-slate-600 hover:bg-slate-100 rounded-radius-lg"
               onClick={() => setSidebarOpen(true)}
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             </button>
-            <div>
-              <h1 className="text-heading-sm font-bold text-slate-900 hidden sm:block">
+            <div className="min-w-0">
+              <h1 className="text-heading-sm font-bold text-slate-900 truncate hidden sm:block">
                 {roleLabel[user?.role ?? ''] ?? 'Dashboard'}
               </h1>
-              <p className="text-caption text-slate-400 hidden md:block">
-                {now.toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })} · {now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              <p className="text-caption text-slate-400 hidden lg:block truncate max-w-[200px]">
+                {now.toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })} · {now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors relative">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
             </button>
             {user?.avatar ? (
-              <img src={user.avatar} alt={user.name} className="w-9 h-9 rounded-full border-2 border-slate-200" />
+              <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full border-2 border-slate-200" />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white font-bold text-body-sm border-2 border-slate-200">
+              <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white font-bold text-body-sm border-2 border-slate-200">
                 {initials}
               </div>
             )}
@@ -182,7 +182,7 @@ export const DashboardLayout = () => {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
+        <main className="flex-1 p-3 lg:p-6 overflow-x-hidden">
           <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>

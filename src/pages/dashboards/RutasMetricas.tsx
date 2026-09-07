@@ -298,17 +298,17 @@ const GraphPanel = ({ ruta }: { ruta: Ruta }) => {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         {[
           { icon: <Users className="w-4 h-4" />, label: 'Pax/día prom.', value: avgPax, color: 'text-blue-600', bg: 'bg-blue-50' },
           { icon: <Percent className="w-4 h-4" />, label: 'Ocupación', value: `${ocupacion}%`, color: 'text-emerald-600', bg: 'bg-emerald-50' },
           { icon: <DollarSign className="w-4 h-4" />, label: 'Ing. semana', value: `$${ingSemana}`, color: 'text-brand-600', bg: 'bg-brand-50' },
         ].map((kpi) => (
-          <div key={kpi.label} className="bg-slate-50 rounded-radius-lg p-3 text-center">
+          <div key={kpi.label} className="bg-slate-50 rounded-radius-lg p-3 text-center min-w-0">
             <div className={`w-8 h-8 ${kpi.bg} ${kpi.color} rounded-full flex items-center justify-center mx-auto mb-2`}>
               {kpi.icon}
             </div>
-            <p className="text-heading-sm font-bold text-slate-900">{kpi.value}</p>
+            <p className="text-heading-sm font-bold text-slate-900 truncate">{kpi.value}</p>
             <p className="text-caption text-slate-400">{kpi.label}</p>
           </div>
         ))}

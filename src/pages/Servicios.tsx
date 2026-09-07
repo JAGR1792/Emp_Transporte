@@ -65,7 +65,7 @@ export const Servicios = () => {
   const handleSubmit = () => { setEnviado(true); };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 overflow-x-hidden">
       {/* Hero */}
       <div className="bg-gradient-to-br from-slate-900 via-brand-900 to-slate-900 py-20 px-4 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">

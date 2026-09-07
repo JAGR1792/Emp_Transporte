@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Calendar, Users, ArrowRight, Clock, Star, ChevronLeft } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, Clock, Star, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { ReservaFlow } from '@/components/ui/ReservaFlow';
 import { useReservas, contarAsientos, type Salida } from '@/context/ReservasContext';
@@ -31,24 +31,24 @@ export const Pasajeros = () => {
   const resultados = getSalidas({ origen, destino });
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 overflow-x-hidden">
       {/* Hero */}
-      <div className="bg-slate-900 py-16 px-4">
+      <div className="bg-slate-900 py-12 lg:py-16 px-4">
         <div className="container-page max-w-4xl mx-auto text-center">
           <motion.h1
-            className="text-heading-2xl font-bold text-white mb-3"
+            className="text-heading-xl lg:text-heading-2xl font-bold text-white mb-3"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           >
             Compra tu tiquete
           </motion.h1>
-          <p className="text-slate-400 mb-10 text-body-lg">Más de 150 destinos en todo el país.</p>
+          <p className="text-slate-400 mb-8 lg:mb-10 text-body-md lg:text-body-lg">Más de 150 destinos en todo el país.</p>
 
           {/* Search box */}
           <motion.div
-            className="bg-white rounded-radius-2xl p-6 shadow-shadow-elevated"
+            className="bg-white rounded-radius-2xl p-5 lg:p-6 shadow-shadow-elevated"
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           >
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
               <div className="space-y-1.5">
                 <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5" /> Origen
@@ -56,7 +56,7 @@ export const Pasajeros = () => {
                 <select
                   value={origen}
                   onChange={e => setOrigen(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900"
+                  className="w-full px-4 py-3.5 lg:py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base"
                 >
                   {CIUDADES.map(c => <option key={c}>{c}</option>)}
                 </select>
@@ -68,7 +68,7 @@ export const Pasajeros = () => {
                 <select
                   value={destino}
                   onChange={e => setDestino(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900"
+                  className="w-full px-4 py-3.5 lg:py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base"
                 >
                   {CIUDADES.map(c => <option key={c}>{c}</option>)}
                 </select>
@@ -81,7 +81,7 @@ export const Pasajeros = () => {
                   type="date"
                   value={fecha}
                   onChange={e => setFecha(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900"
+                  className="w-full px-4 py-3.5 lg:py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base"
                 />
               </div>
               <div className="space-y-1.5">
@@ -91,7 +91,7 @@ export const Pasajeros = () => {
                 <select
                   value={pasajeros}
                   onChange={e => setPasajeros(Number(e.target.value))}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900"
+                  className="w-full px-4 py-3.5 lg:py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base"
                 >
                   {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} pasajero{n > 1 ? 's' : ''}</option>)}
                 </select>
@@ -108,9 +108,9 @@ export const Pasajeros = () => {
 
       {/* Results */}
       {step === 'results' && (
-        <div className="container-page max-w-4xl mx-auto py-10 px-4">
+        <div className="container-page max-w-4xl mx-auto py-8 lg:py-10 px-4">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
                 <h2 className="text-heading-md font-bold text-slate-900">{origen} → {destino}</h2>
                 <p className="text-body-sm text-slate-500">{new Date(fecha + 'T12:00:00').toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })} · {pasajeros} pasajero{pasajeros > 1 ? 's' : ''}</p>
@@ -122,7 +122,7 @@ export const Pasajeros = () => {
 
             <div className="space-y-4">
               {resultados.length === 0 ? (
-                <div className="bg-white rounded-radius-xl border border-slate-200 p-10 text-center shadow-shadow-sm">
+                <div className="bg-white rounded-radius-xl border border-slate-200 p-8 lg:p-10 text-center shadow-shadow-sm">
                   <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                   <h3 className="text-heading-sm font-bold text-slate-900 mb-2">No hay viajes disponibles</h3>
                   <p className="text-slate-500">Intenta buscar para otra fecha u otra ruta.</p>
@@ -130,59 +130,67 @@ export const Pasajeros = () => {
               ) : (
                 resultados.map((ruta, i) => {
                   const { libre } = contarAsientos(ruta.seats);
+                  // Calculate arrival time
+                  const arrivalHour = (parseInt(ruta.horario.split(':')[0]) + parseInt(ruta.duracion.replace('h',''))) % 24;
+                  const arrivalMin = ruta.horario.split(':')[1] || '00';
+                  const arrivalTime = `${String(arrivalHour).padStart(2, '0')}:${arrivalMin}`;
                   return (
                     <motion.div
                       key={ruta.id}
-                      className="bg-white rounded-radius-xl border border-slate-200 p-6 shadow-shadow-sm hover:shadow-shadow-md hover:border-brand-200 transition-all group"
+                      className="bg-white rounded-radius-xl border border-slate-200 p-4 lg:p-5 shadow-shadow-sm hover:shadow-shadow-md hover:border-brand-200 transition-all group"
                       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
                     >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="flex items-center justify-between md:justify-start gap-4 md:gap-6 flex-1">
-                          {/* Time */}
-                          <div className="text-center md:text-left">
+                      {/* Route info - stacked on mobile, row on desktop */}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          {/* Origin */}
+                          <div className="text-left flex-shrink-0">
                             <p className="text-heading-sm font-bold text-slate-900">{ruta.horario}</p>
                             <p className="text-caption text-slate-500">{ruta.origen}</p>
                           </div>
-                          <div className="flex flex-col items-center gap-1 flex-1 max-w-[120px]">
-                            <p className="text-caption text-slate-400 flex items-center gap-1"><Clock className="w-3 h-3" />{ruta.duracion}</p>
-                            <div className="w-full h-px bg-slate-200 relative">
-                              <ArrowRight className="w-3 h-3 text-slate-400 absolute -right-1.5 -top-1.5" />
-                            </div>
-                            <span className="text-caption font-medium px-2 py-0.5 rounded border bg-brand-100 text-brand-700 border-brand-200">
+                          {/* Duration & bus type */}
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <div className="w-full h-px bg-slate-200 hidden sm:block"></div>
+                            <span className="text-caption font-medium px-2 py-1 rounded border bg-brand-100 text-brand-700 border-brand-200 whitespace-nowrap flex-shrink-0">
                               Bus {ruta.busNumero}
                             </span>
+                            <div className="w-full h-px bg-slate-200 hidden sm:block"></div>
+                            <span className="text-caption text-slate-400 flex items-center gap-1 whitespace-nowrap flex-shrink-0">
+                              <Clock className="w-3 h-3" />{ruta.duracion}
+                            </span>
                           </div>
-                          <div className="text-center md:text-right">
-                            <p className="text-heading-sm font-bold text-slate-900">
-                              {/* Simple end time calc for display mockup purposes */}
-                              {String((parseInt(ruta.horario.split(':')[0]) + parseInt(ruta.duracion.replace('h',''))) % 24).padStart(2, '0')}:{(ruta.horario.split(':')[1] || '00')}
-                            </p>
+                          {/* Destination */}
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-heading-sm font-bold text-slate-900">{arrivalTime}</p>
                             <p className="text-caption text-slate-500">{ruta.destino}</p>
                           </div>
                         </div>
+                      </div>
 
-                        <div className="flex items-center justify-between md:justify-end gap-6 md:gap-8 border-t border-slate-100 pt-4 md:border-0 md:pt-0">
-                          <div className="text-left md:text-center">
-                            <p className="text-caption font-semibold text-slate-500 flex items-center md:justify-center gap-0.5 mb-0.5">
+                      {/* Bottom actions - full width buttons on mobile */}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-slate-100">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <div className="text-center">
+                            <p className="text-caption font-semibold text-slate-500 flex items-center justify-center gap-0.5">
                               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />4.8
                             </p>
                             <p className={`text-caption ${libre === 0 ? 'text-red-500 font-bold' : 'text-emerald-600 font-medium'}`}>
                               {libre === 0 ? 'Agotado' : `${libre} sillas libres`}
                             </p>
                           </div>
-                          <div className="text-right">
-                            <p className="text-heading-md font-bold text-slate-900">${ruta.tarifa.toLocaleString('es-CO')}</p>
+                          <div className="text-slate-900">
+                            <p className="text-heading-md font-bold">${ruta.tarifa.toLocaleString('es-CO')}</p>
                             <p className="text-caption text-slate-500">por pax</p>
                           </div>
-                          <Button 
-                            size="md" 
-                            disabled={libre === 0}
-                            onClick={() => handleSelectRuta(ruta)} 
-                            className="whitespace-nowrap"
-                          >
-                            Seleccionar
-                          </Button>
                         </div>
+                        <Button 
+                          size="md" 
+                          disabled={libre === 0}
+                          onClick={() => handleSelectRuta(ruta)} 
+                          className="w-full sm:w-auto whitespace-nowrap"
+                        >
+                          Seleccionar
+                        </Button>
                       </div>
                     </motion.div>
                   )

@@ -42,58 +42,58 @@ export const Envios = () => {
   const update = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 overflow-x-hidden">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-brand-900 py-14 px-4">
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-brand-900 py-12 lg:py-14 px-4">
         <div className="container-page max-w-3xl mx-auto text-center">
-          <motion.h1 className="text-heading-2xl font-bold text-white mb-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.h1 className="text-heading-xl lg:text-heading-2xl font-bold text-white mb-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             Cotiza y envía tu paquete
           </motion.h1>
-          <p className="text-slate-400 text-body-lg">Rápido, seguro y con cobertura nacional.</p>
+          <p className="text-slate-400 text-body-md lg:text-body-lg">Rápido, seguro y con cobertura nacional.</p>
         </div>
       </div>
 
-      <div className="container-page max-w-3xl mx-auto py-10 px-4">
+      <div className="container-page max-w-3xl mx-auto py-8 lg:py-10 px-4">
         {/* Stepper */}
-        <div className="flex items-center justify-center mb-10">
+        <div className="flex items-center justify-center mb-8 lg:mb-10">
           {STEPS.map((s, i) => (
             <div key={s} className="flex items-center">
               <div className={`flex items-center gap-2 ${i <= step ? 'text-brand-600' : 'text-slate-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-body-sm font-bold border-2 transition-colors ${i < step ? 'bg-brand-600 border-brand-600 text-white' : i === step ? 'bg-white border-brand-600 text-brand-600' : 'bg-white border-slate-200 text-slate-400'}`}>
-                  {i < step ? <CheckCircle className="w-4 h-4" /> : i + 1}
+                <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center text-body-sm font-bold border-2 transition-colors ${i < step ? 'bg-brand-600 border-brand-600 text-white' : i === step ? 'bg-white border-brand-600 text-brand-600' : 'bg-white border-slate-200 text-slate-400'}`}>
+                  {i < step ? <CheckCircle className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> : i + 1}
                 </div>
                 <span className={`text-body-sm font-semibold hidden sm:inline ${i === step ? 'text-brand-600' : i < step ? 'text-brand-500' : 'text-slate-400'}`}>{s}</span>
               </div>
-              {i < STEPS.length - 1 && <div className={`w-12 sm:w-20 h-0.5 mx-2 ${i < step ? 'bg-brand-500' : 'bg-slate-200'}`} />}
+              {i < STEPS.length - 1 && <div className={`w-8 sm:w-12 lg:w-20 h-0.5 mx-2 ${i < step ? 'bg-brand-500' : 'bg-slate-200'}`} />}
             </div>
           ))}
         </div>
 
         {/* Step 0: Form */}
         {step === 0 && (
-          <motion.div className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm p-8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+          <motion.div className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm p-5 lg:p-8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
             <h2 className="text-heading-sm font-bold text-slate-900 mb-6 flex items-center gap-2"><Package className="w-5 h-5 text-brand-600" />Datos del envío</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
               <div>
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-brand-500" />Ciudad Origen</label>
-                <select value={form.origen} onChange={e => update('origen', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900">
+                <select value={form.origen} onChange={e => update('origen', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
                   {CIUDADES.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-red-400" />Ciudad Destino</label>
-                <select value={form.destino} onChange={e => update('destino', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900">
+                <select value={form.destino} onChange={e => update('destino', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
                   {CIUDADES.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><Weight className="w-3.5 h-3.5 text-slate-500" />Peso (kg)</label>
-                <input type="number" min="0.1" step="0.1" value={form.peso} onChange={e => update('peso', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900" />
+                <input type="number" min="0.1" step="0.1" value={form.peso} onChange={e => update('peso', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
               </div>
               <div>
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Tipo de contenido</label>
-                <select value={form.contenido} onChange={e => update('contenido', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900">
+                <select value={form.contenido} onChange={e => update('contenido', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
                   {['Documentos', 'Ropa y calzado', 'Electrónica', 'Alimentos', 'Medicamentos', 'Otros'].map(t => <option key={t}>{t}</option>)}
                 </select>
               </div>
@@ -101,21 +101,21 @@ export const Envios = () => {
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Dimensiones (cm) — Largo × Ancho × Alto</label>
                 <div className="grid grid-cols-3 gap-3">
                   {[['largo','Largo'],['ancho','Ancho'],['alto','Alto']].map(([k,l]) => (
-                    <input key={k} type="number" placeholder={l} value={form[k as keyof typeof form]} onChange={e => update(k, e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900" />
+                    <input key={k} type="number" placeholder={l} value={form[k as keyof typeof form]} onChange={e => update(k, e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
                   ))}
                 </div>
               </div>
               <div>
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Nombre remitente</label>
-                <input type="text" placeholder="Tu nombre" value={form.remitente} onChange={e => update('remitente', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900" />
+                <input type="text" placeholder="Tu nombre" value={form.remitente} onChange={e => update('remitente', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
               </div>
               <div>
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Nombre destinatario</label>
-                <input type="text" placeholder="Nombre de quien recibe" value={form.destinatario} onChange={e => update('destinatario', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900" />
+                <input type="text" placeholder="Nombre de quien recibe" value={form.destinatario} onChange={e => update('destinatario', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
               </div>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6 lg:mt-8">
               <Button size="lg" fullWidth leftIcon={<ChevronRight className="w-5 h-5" />} onClick={handleCotizar}>
                 Ver opciones de envío
               </Button>
@@ -133,16 +133,16 @@ export const Envios = () => {
                 <div
                   key={c.servicio}
                   onClick={() => handleSeleccionar(c)}
-                  className={`relative bg-white rounded-radius-xl border-2 p-6 cursor-pointer transition-all hover:shadow-shadow-md group ${c.destacado ? 'border-brand-500' : 'border-slate-200 hover:border-brand-300'}`}
+                  className={`relative bg-white rounded-radius-xl border-2 p-5 lg:p-6 cursor-pointer transition-all hover:shadow-shadow-md group ${c.destacado ? 'border-brand-500' : 'border-slate-200 hover:border-brand-300'}`}
                 >
-                  {c.destacado && <span className="absolute -top-3 left-6 bg-brand-600 text-white text-caption font-bold px-3 py-0.5 rounded-full">Recomendado</span>}
-                  <div className="flex items-center justify-between">
+                  {c.destacado && <span className="absolute -top-3 left-4 bg-brand-600 text-white text-caption font-bold px-3 py-0.5 rounded-full">Recomendado</span>}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                       <h3 className="font-bold text-slate-900 text-body-lg">{c.servicio}</h3>
                       <p className="text-body-sm text-slate-500 mt-1">{c.descripcion}</p>
                       <p className="text-caption text-slate-400 mt-2 flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{c.dias}</p>
                     </div>
-                    <div className="text-right ml-6">
+                    <div className="text-right sm:text-right ml-6 shrink-0">
                       <p className="text-heading-md font-bold text-slate-900">${c.precio.toLocaleString('es-CO')}</p>
                       <p className="text-caption text-slate-400">COP</p>
                       <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -161,12 +161,12 @@ export const Envios = () => {
         {step === 2 && servicioSel && (
           <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}>
             <div className="bg-white rounded-radius-2xl border border-slate-200 shadow-shadow-sm overflow-hidden">
-              <div className="bg-emerald-50 border-b border-emerald-100 p-6 text-center">
-                <CheckCircle className="w-14 h-14 text-emerald-500 mx-auto mb-3" />
+              <div className="bg-emerald-50 border-b border-emerald-100 p-5 lg:p-6 text-center">
+                <CheckCircle className="w-12 h-12 lg:w-14 lg:h-14 text-emerald-500 mx-auto mb-3" />
                 <h2 className="text-heading-md font-bold text-slate-900 mb-1">¡Listo para enviar!</h2>
                 <p className="text-body-sm text-slate-600">Revisa el resumen y confirma tu envío</p>
               </div>
-              <div className="p-8">
+              <div className="p-6 lg:p-8">
                 <div className="space-y-3 text-body-sm">
                   {[
                     ['Servicio', servicioSel.servicio],
