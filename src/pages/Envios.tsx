@@ -76,24 +76,24 @@ export const Envios = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
               <div>
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-brand-500" />Ciudad Origen</label>
-                <select value={form.origen} onChange={e => update('origen', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
+                <label htmlFor="env-origen" className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-brand-500" aria-hidden="true" />Ciudad Origen</label>
+                <select id="env-origen" value={form.origen} onChange={e => update('origen', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
                   {CIUDADES.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-red-400" />Ciudad Destino</label>
-                <select value={form.destino} onChange={e => update('destino', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
+                <label htmlFor="env-destino" className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-red-400" aria-hidden="true" />Ciudad Destino</label>
+                <select id="env-destino" value={form.destino} onChange={e => update('destino', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
                   {CIUDADES.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><Weight className="w-3.5 h-3.5 text-slate-500" />Peso (kg)</label>
-                <input type="number" min="0.1" step="0.1" value={form.peso} onChange={e => update('peso', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
+                <label htmlFor="env-peso" className="text-body-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5"><Weight className="w-3.5 h-3.5 text-slate-500" aria-hidden="true" />Peso (kg)</label>
+                <input id="env-peso" type="number" min="0.1" step="0.1" value={form.peso} onChange={e => update('peso', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
               </div>
               <div>
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Tipo de contenido</label>
-                <select value={form.contenido} onChange={e => update('contenido', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
+                <label htmlFor="env-contenido" className="text-body-sm font-semibold text-slate-700 mb-1.5">Tipo de contenido</label>
+                <select id="env-contenido" value={form.contenido} onChange={e => update('contenido', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base">
                   {['Documentos', 'Ropa y calzado', 'Electrónica', 'Alimentos', 'Medicamentos', 'Otros'].map(t => <option key={t}>{t}</option>)}
                 </select>
               </div>
@@ -101,17 +101,17 @@ export const Envios = () => {
                 <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Dimensiones (cm) — Largo × Ancho × Alto</label>
                 <div className="grid grid-cols-3 gap-3">
                   {[['largo','Largo'],['ancho','Ancho'],['alto','Alto']].map(([k,l]) => (
-                    <input key={k} type="number" placeholder={l} value={form[k as keyof typeof form]} onChange={e => update(k, e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
+                    <input key={k} id={`env-${k}`} aria-label={`${l} en centímetros`} type="number" placeholder={l} value={form[k as keyof typeof form]} onChange={e => update(k, e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
                   ))}
                 </div>
               </div>
               <div>
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Nombre remitente</label>
-                <input type="text" placeholder="Tu nombre" value={form.remitente} onChange={e => update('remitente', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
+                <label htmlFor="env-remitente" className="text-body-sm font-semibold text-slate-700 mb-1.5">Nombre remitente</label>
+                <input id="env-remitente" type="text" placeholder="Tu nombre…" autoComplete="off" spellCheck={false} value={form.remitente} onChange={e => update('remitente', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
               </div>
               <div>
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5">Nombre destinatario</label>
-                <input type="text" placeholder="Nombre de quien recibe" value={form.destinatario} onChange={e => update('destinatario', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
+                <label htmlFor="env-destinatario" className="text-body-sm font-semibold text-slate-700 mb-1.5">Nombre destinatario</label>
+                <input id="env-destinatario" type="text" placeholder="Nombre de quien recibe…" autoComplete="off" spellCheck={false} value={form.destinatario} onChange={e => update('destinatario', e.target.value)} className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base" />
               </div>
             </div>
 

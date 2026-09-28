@@ -34,7 +34,7 @@ export const Home = () => {
               <span className="inline-block py-1.5 px-3 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-body-sm font-semibold mb-6">
                 Líderes en Transporte Nacional
               </span>
-              <h1 className="text-heading-xl lg:text-heading-2xl leading-tight font-bold text-white mb-6">
+                <h1 className="text-heading-xl lg:text-heading-2xl leading-tight font-bold text-white mb-6 text-balance">
                 Conectamos tu mundo, <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-blue-400">
                   sin límites.
@@ -45,15 +45,13 @@ export const Home = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
-                <Link to="/pasajeros">
-                  <Button size="lg" leftIcon={<Truck className="w-5 h-5" />}>
-                    Comprar Tiquetes
-                  </Button>
+                <Link to="/pasajeros" className="inline-flex items-center justify-center font-semibold px-7 py-3.5 text-body-lg gap-2.5 rounded-radius-xl bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-shadow-md hover:shadow-shadow-lg">
+                  <Truck className="w-5 h-5" aria-hidden="true" />
+                  Comprar Tiquetes
                 </Link>
-                <Link to="/envios">
-                  <Button variant="outline" size="lg" className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30" leftIcon={<Package className="w-5 h-5" />}>
-                    Cotizar Envío
-                  </Button>
+                <Link to="/envios" className="inline-flex items-center justify-center font-semibold px-7 py-3.5 text-body-lg gap-2.5 rounded-radius-xl border-2 bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30">
+                  <Package className="w-5 h-5" aria-hidden="true" />
+                  Cotizar Envío
                 </Link>
               </div>
             </motion.div>
@@ -71,20 +69,22 @@ export const Home = () => {
         >
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="w-12 h-12 lg:w-14 lg:h-14 bg-brand-50 rounded-full flex items-center justify-center shrink-0">
-              <MapPin className="w-6 h-6 lg:w-7 lg:h-7 text-brand-600" />
+              <MapPin className="w-6 h-6 lg:w-7 lg:h-7 text-brand-600" aria-hidden="true" />
             </div>
-            <div>
-              <h3 className="text-body-md lg:text-heading-sm font-bold text-slate-900">Rastrea tu paquete</h3>
-              <p className="text-body-sm text-slate-500">Ingresa tu número de guía para ver el estado</p>
+              <div>
+                <h2 className="text-body-md lg:text-heading-sm font-bold text-slate-900">Rastrea tu paquete</h2>
+                <p className="text-body-sm text-slate-500">Ingresa tu número de guía para ver el estado</p>
+              </div>
             </div>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row w-full md:w-[100%] lg:w-[500px] gap-3">
-            <input 
-              type="text" 
-              placeholder="Ej: TRN-123456789" 
-              className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-slate-900"
-            />
+            
+            <div className="flex flex-col sm:flex-row w-full md:w-[100%] lg:w-[500px] gap-3">
+              <label htmlFor="rastreo-guia" className="sr-only">Número de guía</label>
+              <input 
+                id="rastreo-guia"
+                type="text" 
+                placeholder="Ej: TRN-123456789…" 
+                className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-slate-900"
+              />
             <Button size="lg" className="whitespace-nowrap">
               Rastrear Ahora
             </Button>
@@ -96,7 +96,7 @@ export const Home = () => {
       <section className="py-16 lg:py-24 bg-slate-50">
         <div className="container-page">
           <div className="text-center max-w-2xl mx-auto mb-12 lg:mb-16">
-            <h2 className="text-heading-lg lg:text-heading-xl font-bold text-slate-900 mb-4">Nuestros Servicios</h2>
+            <h2 className="text-heading-lg lg:text-heading-xl font-bold text-slate-900 mb-4 text-balance">Nuestros Servicios</h2>
             <p className="text-body-md text-slate-600">
               Ofrecemos una amplia gama de soluciones logísticas y de transporte diseñadas para satisfacer las necesidades de personas y empresas.
             </p>
@@ -105,19 +105,19 @@ export const Home = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {[
               {
-                icon: <Truck className="w-8 h-8 text-brand-600" />,
+                icon: <Truck className="w-8 h-8 text-brand-600" aria-hidden="true" />,
                 title: 'Pasajeros',
                 desc: 'Viaja cómodo y seguro a más de 150 destinos en todo el país con nuestra moderna flota de autobuses.',
                 link: '/pasajeros'
               },
               {
-                icon: <Package className="w-8 h-8 text-brand-600" />,
+                icon: <Package className="w-8 h-8 text-brand-600" aria-hidden="true" />,
                 title: 'Mensajería Express',
                 desc: 'Envíos rápidos y seguros de documentos y paquetes pequeños puerta a puerta.',
                 link: '/envios'
               },
               {
-                icon: <Globe className="w-8 h-8 text-brand-600" />,
+                icon: <Globe className="w-8 h-8 text-brand-600" aria-hidden="true" />,
                 title: 'Carga Especializada',
                 desc: 'Transporte de mercancías pesadas, refrigeradas y sobredimensionadas para la industria.',
                 link: '/servicios'
@@ -140,7 +140,7 @@ export const Home = () => {
                 </p>
                 <Link to={service.link} className="text-brand-600 font-semibold text-body-sm flex items-center gap-1 hover:text-brand-700">
                   Conocer más 
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
                 </Link>
               </motion.div>
             ))}
@@ -159,7 +159,7 @@ export const Home = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-heading-lg lg:text-heading-xl font-bold text-slate-900 mb-5 lg:mb-6">
+                <h2 className="text-heading-lg lg:text-heading-xl font-bold text-slate-900 mb-5 lg:mb-6 text-balance">
                   ¿Por qué viajar y enviar con nosotros?
                 </h2>
                 <p className="text-body-md lg:text-body-lg text-slate-600 mb-8 lg:mb-10">
@@ -169,19 +169,19 @@ export const Home = () => {
                 <div className="space-y-6 lg:space-y-8">
                   {[
                     {
-                      icon: <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-600" />,
+                      icon: <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-600" aria-hidden="true" />,
                       bg: 'bg-emerald-50',
                       title: 'Máxima Seguridad',
                       desc: 'Monitoreo GPS 24/7 y estrictos protocolos de bioseguridad.'
                     },
                     {
-                      icon: <Clock className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" />,
+                      icon: <Clock className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" aria-hidden="true" />,
                       bg: 'bg-blue-50',
                       title: 'Puntualidad Garantizada',
                       desc: 'Cumplimiento del 98% en nuestros itinerarios y tiempos de entrega.'
                     },
                     {
-                      icon: <Globe className="w-5 h-5 lg:w-6 lg:h-6 text-purple-600" />,
+                      icon: <Globe className="w-5 h-5 lg:w-6 lg:h-6 text-purple-600" aria-hidden="true" />,
                       bg: 'bg-purple-50',
                       title: 'Cobertura Total',
                       desc: 'Llegamos a donde otros no pueden. Más de 150 terminales propias.'
@@ -192,7 +192,7 @@ export const Home = () => {
                         {feature.icon}
                       </div>
                       <div>
-                        <h4 className="text-body-md lg:text-heading-xs font-bold text-slate-900 mb-1">{feature.title}</h4>
+                        <h3 className="text-body-md lg:text-heading-xs font-bold text-slate-900 mb-1">{feature.title}</h3>
                         <p className="text-body-sm text-slate-600">{feature.desc}</p>
                       </div>
                     </div>
@@ -212,7 +212,7 @@ export const Home = () => {
                  <div className="absolute inset-0 bg-gradient-to-tr from-brand-600 to-blue-400 opacity-90" />
                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 lg:p-8 text-center">
                     <div className="w-20 h-20 lg:w-24 lg:h-24 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-5">
-                      <Truck className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                      <Truck className="w-10 h-10 lg:w-12 lg:h-12 text-white" aria-hidden="true" />
                     </div>
                     <h3 className="text-heading-md lg:text-heading-lg font-bold text-white mb-2">Tu mejor compañero de ruta</h3>
                     <p className="text-white/80 max-w-sm mx-auto">

@@ -11,7 +11,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', loading, fullWidth, disabled, children, leftIcon, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-semibold transition-all duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+    const baseStyles = 'inline-flex items-center justify-center font-semibold transition-[background-color,border-color,color,box-shadow,opacity] duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
 
     const variants = {
       primary: 'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-shadow-md hover:shadow-shadow-lg',

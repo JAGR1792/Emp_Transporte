@@ -50,10 +50,11 @@ export const Pasajeros = () => {
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
               <div className="space-y-1.5">
-                <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5" /> Origen
+                <label htmlFor="pas-origen" className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5" aria-hidden="true" /> Origen
                 </label>
                 <select
+                  id="pas-origen"
                   value={origen}
                   onChange={e => setOrigen(e.target.value)}
                   className="w-full px-4 py-3.5 lg:py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base"
@@ -62,10 +63,11 @@ export const Pasajeros = () => {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5" /> Destino
+                <label htmlFor="pas-destino" className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5" aria-hidden="true" /> Destino
                 </label>
                 <select
+                  id="pas-destino"
                   value={destino}
                   onChange={e => setDestino(e.target.value)}
                   className="w-full px-4 py-3.5 lg:py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base"
@@ -74,10 +76,11 @@ export const Pasajeros = () => {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5" /> Fecha
+                <label htmlFor="pas-fecha" className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5" aria-hidden="true" /> Fecha
                 </label>
                 <input
+                  id="pas-fecha"
                   type="date"
                   value={fecha}
                   onChange={e => setFecha(e.target.value)}
@@ -85,10 +88,11 @@ export const Pasajeros = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5" /> Pasajeros
+                <label htmlFor="pas-pasajeros" className="text-caption font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" aria-hidden="true" /> Pasajeros
                 </label>
                 <select
+                  id="pas-pasajeros"
                   value={pasajeros}
                   onChange={e => setPasajeros(Number(e.target.value))}
                   className="w-full px-4 py-3.5 lg:py-3 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 text-base"

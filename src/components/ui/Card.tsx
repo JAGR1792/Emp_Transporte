@@ -12,7 +12,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       default: 'bg-white border border-slate-200',
       elevated: 'bg-white shadow-shadow-lg border-none',
       outlined: 'bg-white border-2 border-slate-200',
-      interactive: 'bg-white border border-slate-200 hover:shadow-shadow-md hover:border-brand-300 transition-all duration-normal cursor-pointer',
+      interactive: 'bg-white border border-slate-200 hover:shadow-shadow-md hover:border-brand-300 transition-[background-color,border-color,box-shadow] duration-normal cursor-pointer',
     }
 
     const paddings = {

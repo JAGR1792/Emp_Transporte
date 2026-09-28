@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils'
 import { X } from 'lucide-react'
@@ -32,6 +33,15 @@ export const Modal = ({
     full: 'max-w-4xl',
   }
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -44,7 +54,7 @@ export const Modal = ({
             onClick={closeOnOverlayClick ? onClose : undefined}
             role="presentation"
           />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overscroll-contain">
             <motion.div
               className={cn(
                 'w-full bg-white rounded-radius-2xl shadow-shadow-elevated',
@@ -139,7 +149,7 @@ export const AlertDialog = ({
               : 'bg-brand-600 hover:bg-brand-700'
           )}
         >
-          {loading ? 'Procesando...' : confirmText}
+          {loading ? 'Procesando…' : confirmText}
         </button>
       </div>
     </Modal>

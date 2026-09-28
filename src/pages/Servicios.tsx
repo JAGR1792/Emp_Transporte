@@ -208,21 +208,21 @@ export const Servicios = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {[['empresa','Empresa','Tu empresa S.A.S'],['nit','NIT','900.123.456-7'],['nombre','Nombre de contacto','Tu nombre completo'],['cargo','Cargo','Gerente Logístico'],['email','Correo corporativo','contacto@empresa.com'],['celular','Celular','310 000 0000']].map(([k,l,ph]) => (
                 <div key={k}>
-                  <label className="text-body-sm font-semibold text-slate-700 mb-1.5 block">{l}</label>
-                  <input type="text" placeholder={ph} value={form[k as keyof typeof form]} onChange={e => update(k, e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900" />
+                  <label htmlFor={`srv-${k}`} className="text-body-sm font-semibold text-slate-700 mb-1.5 block">{l}</label>
+                  <input id={`srv-${k}`} type={k === 'email' ? 'email' : k === 'celular' ? 'tel' : 'text'} placeholder={`${ph}…`} autoComplete={k === 'email' ? 'email' : k === 'celular' ? 'tel' : 'off'} spellCheck={false} value={form[k as keyof typeof form]} onChange={e => update(k, e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900" />
                 </div>
               ))}
               <div className="sm:col-span-2">
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5 block">Servicio de interés</label>
-                <select value={form.servicio} onChange={e => update('servicio', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900">
+                  <label htmlFor="srv-servicio" className="text-body-sm font-semibold text-slate-700 mb-1.5 block">Servicio de interés</label>
+                  <select id="srv-servicio" value={form.servicio} onChange={e => update('servicio', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900">
                   <option value="">Selecciona un servicio</option>
                   {SERVICIOS.map(s => <option key={s.id}>{s.titulo}</option>)}
                   <option>Más de un servicio</option>
                 </select>
               </div>
               <div className="sm:col-span-2">
-                <label className="text-body-sm font-semibold text-slate-700 mb-1.5 block">Mensaje adicional</label>
-                <textarea value={form.mensaje} onChange={e => update('mensaje', e.target.value)} rows={4} placeholder="Cuéntanos sobre tu operación, volumen estimado, rutas..." className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 resize-none" />
+                  <label htmlFor="srv-mensaje" className="text-body-sm font-semibold text-slate-700 mb-1.5 block">Mensaje adicional</label>
+                  <textarea id="srv-mensaje" value={form.mensaje} onChange={e => update('mensaje', e.target.value)} rows={4} placeholder="Cuéntanos sobre tu operación, volumen estimado, rutas…" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-radius-lg focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 resize-none" />
               </div>
             </div>
             <div className="mt-6">

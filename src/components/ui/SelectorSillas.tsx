@@ -94,6 +94,7 @@ const SeatIcon = ({
       viewBox="0 0 36 44"
       width="100%"
       height="auto"
+      aria-hidden="true"
       className="max-w-[48px] drop-shadow-sm"
       xmlns="http://www.w3.org/2000/svg"
       style={{ overflow: 'visible' }}
@@ -254,6 +255,15 @@ export default function SelectorSillas({
     setIsDragging(false);
   };
 
+  const handleKeyDown = (id: string) => (e: React.KeyboardEvent) => {
+    if (readOnly) return;
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    const status = seats[id];
+    if (status === 'ocupado' || status === 'inhabilitado') return;
+    toggle(id);
+  };
+
   const libres = Object.values(seats).filter((s) => s === 'libre').length;
   const ocupados = Object.values(seats).filter((s) => s === 'ocupado').length;
   const total = Object.keys(seats).length;
@@ -353,6 +363,7 @@ export default function SelectorSillas({
                     onMouseDown={() => handleMouseDown(id)}
                     onMouseEnter={() => handleMouseEnter(id)}
                     onMouseLeave={() => setHovered(null)}
+                    onKeyDown={handleKeyDown(id)}
                     disabled={readOnly || status === 'ocupado' || status === 'inhabilitado'}
                     title={
                       status === 'ocupado'
@@ -361,6 +372,8 @@ export default function SelectorSillas({
                         ? `Silla ${id} — No disponible`
                         : `Silla ${id} — Libre`
                     }
+                    aria-pressed={isSel}
+                    aria-label={`Silla ${id} — ${isSel ? 'Seleccionada' : status === 'ocupado' ? 'Ocupada' : status === 'inhabilitado' ? 'No disponible' : 'Libre'}`}
                     className={`relative focus:outline-none w-9 sm:w-12 aspect-[36/44] ${
                       !readOnly && status === 'libre' ? 'cursor-pointer' : 'cursor-default'
                     } ${isAdj ? 'drop-shadow-lg' : ''}`}
@@ -402,12 +415,15 @@ export default function SelectorSillas({
                     onMouseDown={() => handleMouseDown(id)}
                     onMouseEnter={() => handleMouseEnter(id)}
                     onMouseLeave={() => setHovered(null)}
+                    onKeyDown={handleKeyDown(id)}
                     disabled={readOnly || status === 'ocupado' || status === 'inhabilitado'}
                     title={
                       status === 'ocupado'
                         ? `Silla ${id} — Ocupada`
                         : `Silla ${id} — Libre`
                     }
+                    aria-pressed={isSel}
+                    aria-label={`Silla ${id} — ${isSel ? 'Seleccionada' : status === 'ocupado' ? 'Ocupada' : status === 'inhabilitado' ? 'No disponible' : 'Libre'}`}
                     className={`relative focus:outline-none w-9 sm:w-12 aspect-[36/44] ${
                       !readOnly && status === 'libre' ? 'cursor-pointer' : 'cursor-default'
                     }`}

@@ -147,7 +147,7 @@ export function ReservaFlow({
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
 
         <motion.div
-          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-3xl bg-white md:rounded-radius-2xl shadow-shadow-elevated flex flex-col overflow-hidden"
+          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-3xl bg-white md:rounded-radius-2xl shadow-shadow-elevated flex flex-col overflow-hidden overscroll-contain"
           initial={{ scale: 0.95, y: 20, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
           exit={{ scale: 0.95, y: 20, opacity: 0 }}
@@ -163,8 +163,8 @@ export function ReservaFlow({
                 {salida.origen} → {salida.destino} <span className="hidden sm:inline">· {salida.fecha} · Bus {salida.busNumero}</span>
               </p>
             </div>
-            <button onClick={onClose} className="p-2 -mr-2 rounded-full hover:bg-slate-200 text-slate-400 transition-colors">
-              <X className="w-6 h-6" />
+            <button onClick={onClose} aria-label="Cerrar" className="p-2 -mr-2 rounded-full hover:bg-slate-200 text-slate-400 transition-colors">
+              <X className="w-6 h-6" aria-hidden="true" />
             </button>
           </div>
 

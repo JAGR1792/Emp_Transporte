@@ -29,6 +29,11 @@
     overflow-x: hidden;
   }
 
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
   * {
     @apply border-slate-200;
   }

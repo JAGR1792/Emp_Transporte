@@ -69,7 +69,7 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(
         disabled={disabled}
         onClick={() => !disabled && setActiveTab(id)}
         className={cn(
-          'relative px-4 py-2.5 text-body-sm font-medium rounded-radius-lg transition-all duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+          'relative px-4 py-2.5 text-body-sm font-medium rounded-radius-lg transition-[background-color,color,box-shadow] duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
           isActive
             ? 'bg-white text-brand-600 shadow-shadow-sm'
             : 'text-slate-600 hover:text-slate-900',

@@ -23,7 +23,7 @@ export const Login = () => {
           
           <div className="relative z-10">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8">
-              <Truck className="w-8 h-8 text-white" />
+              <Truck className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-heading-xl font-bold mb-4">
               Bienvenido a tu plataforma
@@ -51,7 +51,7 @@ export const Login = () => {
               className="w-full flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border border-slate-200 rounded-radius-xl hover:border-brand-300 hover:bg-brand-50 transition-colors text-left"
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center shrink-0">
-                <Shield className="w-5 h-5 sm:w-6 sm:h-6" />
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="font-bold text-slate-900">Administrador</h3>
@@ -66,7 +66,7 @@ export const Login = () => {
               className="w-full flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border border-slate-200 rounded-radius-xl hover:border-blue-300 hover:bg-blue-50 transition-colors text-left"
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shrink-0">
-                <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />
+                <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="font-bold text-slate-900">Operario / Cajero</h3>
@@ -81,7 +81,7 @@ export const Login = () => {
               className="w-full flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border border-slate-200 rounded-radius-xl hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-left"
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shrink-0">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6" />
+                <Users className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="font-bold text-slate-900">Cliente</h3>
