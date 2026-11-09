@@ -1,105 +1,94 @@
-# Transporte Nacional - Frontend
+# SIGTVA — Implementación de patrones de diseño
 
-Interfaz de usuario para empresa transportadora de pasajeros a nivel nacional con servicios de mensajería y paquetes. Mockup completo con React + TypeScript + TailwindCSS.
+Aplicación Flask en **tres capas** (MVC) que implementa un proceso por patrón:
 
-##  Demo
+| Patrón | Proceso | Dónde está |
+|---|---|---|
+| **Factory Method** | Venta de tiquete: creación de la tarifa | `factories/fabrica_tarifa.py` |
+| **Abstract Factory** | Registro de envío (Paqueteo / Corporativa / Remesa) | `factories/fabrica_envio.py` — cliente: `services/servicio_registro_envio.py` |
+| **Builder** | Venta de tiquete | `builders/constructor_tiquete.py` |
+| **Prototype** | Registro de envío: remesa múltiple por clonación | `prototypes/prototipos_envio.py` — cliente: `services/servicio_prototipos.py` |
+| **Singleton** | Venta de tiquete: bloqueo, consecutivo y caché única | `singletons/` (gestor, secuenciadores, validador) |
 
-```bash
-npm run dev
-# http://localhost:5174
-```
+### Patrones de comportamiento
 
-## 📦 Stack
+| Patrón | Proceso | Dónde está |
+|---|---|---|
+| **State** | Seguimiento y cambios de estado del envío (RF M4 a M9) | `states/estados_envio.py` — contexto: `domain/envio.py` (`Envio`) — cliente: `services/proceso_seguimiento_envio.py` — pantalla: `/seguimiento` |
 
-- **React 18** + **TypeScript**
-- **Vite** - Build tool
-- **TailwindCSS** - Styling (design system customizado)
-- **Framer Motion** - Animaciones
-- **React Router DOM** - Routing
-- **Lucide React** - Iconos
-- **clsx + tailwind-merge** - Utilidades de clases
+**State:** el `Envio` guarda su estado actual (`RecibidoEnOrigen`, `EnTransito`, `DescargadoEnConexion`, `DisponibleEnDestino`, `Entregado`, `Retenido`, `EnReclamacion`, `Abandonado`) y le delega cada operación (`despachar`, `descargar`, `entregar`, `revisarBodegaje`, `registrarNovedad`, `liberar`, `abrirReclamacion`, `resolverReclamacion`). Cada estado decide si la acepta y a cuál pasa; `EstadoBase` rechaza por defecto con `TransicionNoPermitida`. Cada cambio queda en la tabla `historial` y genera una `notificacion` (RF-04). En la web: menú **Seguimiento** (rol admin), escanear la guía y probar las operaciones.
 
-## 🏗 Estructura
+> Si ya tenías un `sigtva.db` de antes, no hay que borrarlo: al arrancar, `models/migraciones.py` le agrega a `envio` las columnas de seguimiento que falten.
 
-```
-src/
-├── models/           # Modelo: tipos y datos del dominio
-│   ├── types/          # TypeScript types
-│   ├── constants.ts    # Ciudades, tarifas, estados
-│   ├── format.ts       # Formato moneda/fechas
-│   └── cn.ts           # Utilidad de clases (clsx + tailwind-merge)
-├── controllers/      # Controlador: estado y lógica
-│   ├── context/        # AuthContext, ReservasContext
-│   └── hooks/          # Custom hooks
-├── views/            # Vista: presentación
-│   ├── components/
-│   │   ├── ui/         # Componentes base reutilizables
-│   │   │   ├── Button.tsx
-│   │   │   ├── Card.tsx
-│   │   │   ├── Input.tsx
-│   │   │   ├── Select.tsx
-│   │   │   ├── Modal.tsx
-│   │   │   ├── Tabs.tsx
-│   │   │   ├── Badge.tsx
-│   │   │   ├── Spinner.tsx
-│   │   │   └── Tooltip.tsx
-│   │   └── layout/     # Layout principal (Header, Footer)
-│   ├── pages/          # Páginas públicas
-│   │   ├── Home.tsx
-│   │   ├── Pasajeros.tsx   # Compra tiquetes (3 pasos)
-│   │   ├── Envios.tsx      # Cotizar envíos (4 pasos)
-│   │   ├── Rastreo.tsx      # Tracking con timeline
-│   │   ├── Servicios.tsx
-│   │   ├── Login.tsx
-│   │   ├── Demo.tsx        # Playground componentes
-│   │   └── dashboards/     # Admin, Cliente, Operario
-│   └── layouts/
-│       └── DashboardLayout.tsx
-├── App.tsx
-├── main.tsx
-└── index.css
-```
+En la venta de tiquete los patrones **componen**: la `Tarifa` la crea el Factory Method y el Builder la recibe ya creada; en el registro de envío, cada guía clonada por Prototype se numera con el SecuenciadorGuia (Singleton).
 
-##  Páginas implementadas
+## Capas
 
-| Página | Descripción |
-|--------|-------------|
-| `/` | Home con hero, búsqueda unificada, stats, features, flota, CTA |
-| `/pasajeros` | Compra tiquetes: búsqueda → resultados → selección asientos |
-| `/envios` | Cotizador: origen/destino → paquete → servicio → resumen/pago |
-| `/rastreo` | Tracking por código, timeline animado, mapa mock, ayuda |
-| `/servicios` | Grid 6 servicios con hover effects y características |
-| `/login` | Auth con tabs login/register, validación, demo credentials |
-| `/dashboard` | Área usuario: viajes, envíos, perfil, config (sidebar colapsible) |
-| `/demo` | Playground interactivo de todos los componentes UI |
+| Capa | Carpetas / archivos |
+|---|---|
+| Presentación (vista + controlador) | `app.py`, `templates/` |
+| Lógica de negocio | `services/`, `factories/`, `builders/`, `prototypes/`, `singletons/`, `domain/` |
+| Datos | `dao/`, `models/` |
 
-##  Design System
+Regla de dependencias: datos solo usa datos; lógica usa lógica y datos; presentación usa lógica (los procesos) y, en tres rutas de consulta, datos directamente.
 
-**Colores:**
-- Brand: naranja (`#f97316`) - primaria
-- Slate: escala neutra completa
-- Surface: white, elevated, sunken
-- Accent: sky (`#0ea5e9`)
-
-**Tipografía:**
-- Display: Space Grotesk (títulos)
-- Body: DM Sans (texto)
-- Mono: JetBrains Mono (código/datos)
-
-**Tokens:** spacing, border-radius, shadows, animations, breakpoints responsive
-
-## 🛠 Scripts
+## Ejecución
 
 ```bash
-npm run dev      # Desarrollo
-npm run build    # Build producción (dist/)
-npm run preview  # Preview build
-npm run lint     # ESLint
+pip install -r requirements.txt
+python app.py            # http://127.0.0.1:5000  (crea la BD y datos de prueba solos)
 ```
 
-## Responsive
+Tras cada compra o envío, la factura muestra el panel **«Patrones en acción»** con los pasos reales de cada patrón.
 
-- Mobile-first: `< 768px`
-- Tablet: `768px - 1023px`
-- Desktop: `≥ 1024px`
-- Sidebar colapsible en dashboard
+## Demos por consola (una por patrón)
+
+```bash
+python demos/demo_factory_method.py
+python demos/demo_abstract_factory.py
+python demos/demo_builder.py
+python demos/demo_prototype.py
+python demos/demo_singleton.py
+python demos/demo_iterator.py
+python demos/demo_memento.py
+python demos/demo_state.py
+```
+
+## Calidad
+
+```bash
+python -m ruff check .   # limpio: imports ordenados, sin excepciones ciegas,
+                         # datetimes con zona, anotaciones modernas
+```
+
+## Pantallazos solicitados (12)
+
+Carpeta: `docs/pantallazos/` — ver directo en `main`.
+
+1. Arranque — `docs/pantallazos/01_arranque.png`
+2. Inicio — `docs/pantallazos/02_inicio.png`
+3. Consola Factory Method — `docs/pantallazos/03_consola_factory_method.png`
+4. Selección de tarifa en la web — `docs/pantallazos/04_seleccion_tarifa_web.png`
+5. Consola Abstract Factory — `docs/pantallazos/05_consola_abstract_factory.png`
+6. Formulario de registro de envío — `docs/pantallazos/06_formulario_envio.png`
+7. Factura del envío con el panel — `docs/pantallazos/07_factura_envio_panel.png`
+8. Regla de la familia en la web — `docs/pantallazos/08_regla_familia_web.png`
+9. Demo por consola de Builder — `docs/pantallazos/09_consola_builder.png`
+10. Compra de tiquete en la web — `docs/pantallazos/10_compra_tiquete_web.png`
+11. Demo por consola de Prototype — `docs/pantallazos/11_consola_prototype.png`
+12. Demo por consola de Singleton — `docs/pantallazos/12_consola_singleton.png`
+
+![01 arranque](docs/pantallazos/01_arranque.png)
+![02 inicio](docs/pantallazos/02_inicio.png)
+![03 consola factory](docs/pantallazos/03_consola_factory_method.png)
+![04 tarifa web](docs/pantallazos/04_seleccion_tarifa_web.png)
+![05 consola abstract](docs/pantallazos/05_consola_abstract_factory.png)
+![06 formulario envio](docs/pantallazos/06_formulario_envio.png)
+![07 factura envio](docs/pantallazos/07_factura_envio_panel.png)
+![08 regla familia](docs/pantallazos/08_regla_familia_web.png)
+![09 consola builder](docs/pantallazos/09_consola_builder.png)
+![10 compra tiquete](docs/pantallazos/10_compra_tiquete_web.png)
+![11 consola prototype](docs/pantallazos/11_consola_prototype.png)
+![12 consola singleton](docs/pantallazos/12_consola_singleton.png)
+
+
