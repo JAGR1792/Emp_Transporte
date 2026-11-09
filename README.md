@@ -26,7 +26,8 @@ src/
 ├── models/           # Modelo: tipos y datos del dominio
 │   ├── types/          # TypeScript types
 │   ├── constants.ts    # Ciudades, tarifas, estados
-│   └── format.ts       # Formato moneda/fechas
+│   ├── format.ts       # Formato moneda/fechas
+│   └── cn.ts           # Utilidad de clases (clsx + tailwind-merge)
 ├── controllers/      # Controlador: estado y lógica
 │   ├── context/        # AuthContext, ReservasContext
 │   └── hooks/          # Custom hooks
@@ -54,8 +55,6 @@ src/
 │   │   └── dashboards/     # Admin, Cliente, Operario
 │   └── layouts/
 │       └── DashboardLayout.tsx
-├── utils/            # Helpers compartidos
-│   └── cn.ts
 ├── App.tsx
 ├── main.tsx
 └── index.css

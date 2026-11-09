@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, Navigate, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/controllers/context/AuthContext';
 import { LogOut, Truck, Bell, Settings, User as UserIcon, Menu, X, BarChart2, Package, Calendar, CreditCard, Layers, FileText, MapPin } from 'lucide-react';
-import { cn } from '@/utils';
+import { cn } from '@/models';
 
 // Nav items per role
 const NAV_ITEMS: Record<string, { icon: React.ReactNode; label: string; to?: string }[]> = {

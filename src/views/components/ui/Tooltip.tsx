@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { cn } from '@/utils'
+import { cn } from '@/models'
 
 export interface TooltipProps {
   content: ReactNode

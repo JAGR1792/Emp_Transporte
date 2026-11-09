@@ -1,5 +1,5 @@
 import { type HTMLAttributes } from 'react'
-import { cn } from '@/utils'
+import { cn } from '@/models'
 
 export interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, forwardRef, type ReactNode, type HTMLAttributes } from 'react'
-import { cn } from '@/utils'
+import { cn } from '@/models'
 
 interface TabsContextValue {
   activeTab: string

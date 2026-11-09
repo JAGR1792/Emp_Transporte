@@ -1,5 +1,5 @@
 import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes, useId } from 'react'
-import { cn } from '@/utils'
+import { cn } from '@/models'
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
