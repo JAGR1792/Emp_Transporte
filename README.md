@@ -2,7 +2,7 @@
 
 Interfaz de usuario para empresa transportadora de pasajeros a nivel nacional con servicios de mensajería y paquetes. Mockup completo con React + TypeScript + TailwindCSS.
 
-## 🚀 Demo
+##  Demo
 
 ```bash
 npm run dev
