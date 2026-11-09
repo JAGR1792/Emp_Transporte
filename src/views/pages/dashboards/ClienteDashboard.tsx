@@ -4,11 +4,11 @@ import {
   Package, Truck, Calendar, MapPin,
   Clock, Star, ArrowRight,
 } from 'lucide-react';
-import { ReservaFlow } from '@/components/ui/ReservaFlow';
+import { ReservaFlow } from '@/views/components/ui/ReservaFlow';
 import {
   useReservas, contarAsientos, type Salida,
-} from '@/context/ReservasContext';
-import { useAuth } from '@/context/AuthContext';
+} from '@/controllers/context/ReservasContext';
+import { useAuth } from '@/controllers/context/AuthContext';
 
 /* ─────────────────── Mock data for extra sections ── */
 const ENVIOS = [

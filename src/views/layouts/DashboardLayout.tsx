@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Navigate, Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/controllers/context/AuthContext';
 import { LogOut, Truck, Bell, Settings, User as UserIcon, Menu, X, BarChart2, Package, Calendar, CreditCard, Layers, FileText, MapPin } from 'lucide-react';
 import { cn } from '@/utils';
 

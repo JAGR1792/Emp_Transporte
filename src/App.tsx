@@ -1,15 +1,15 @@
 import { Routes, Route, Outlet } from 'react-router-dom';
-import { MainLayout } from './components/layout/Layout';
-import { Home } from './pages/Home';
-import { Login } from './pages/Login';
-import { Pasajeros } from './pages/Pasajeros';
-import { Envios } from './pages/Envios';
-import { Rastreo } from './pages/Rastreo';
-import { Servicios } from './pages/Servicios';
-import { Demo } from './pages/Demo';
-import { DashboardLayout } from './layouts/DashboardLayout';
-import { DashboardRouter } from './pages/dashboards/DashboardRouter';
-import { RutasMetricas } from './pages/dashboards/RutasMetricas';
+import { MainLayout } from './views/components/layout/Layout';
+import { Home } from './views/pages/Home';
+import { Login } from './views/pages/Login';
+import { Pasajeros } from './views/pages/Pasajeros';
+import { Envios } from './views/pages/Envios';
+import { Rastreo } from './views/pages/Rastreo';
+import { Servicios } from './views/pages/Servicios';
+import { Demo } from './views/pages/Demo';
+import { DashboardLayout } from './views/layouts/DashboardLayout';
+import { DashboardRouter } from './views/pages/dashboards/DashboardRouter';
+import { RutasMetricas } from './views/pages/dashboards/RutasMetricas';
 
 const App = () => {
   return (

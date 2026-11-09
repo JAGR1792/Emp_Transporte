@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Truck, Snowflake, Weight, Users, Building2, CheckCircle, ChevronDown, ChevronUp, Send } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '@/views/components/ui';
 
 const SERVICIOS = [
   {

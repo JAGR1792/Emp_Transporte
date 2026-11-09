@@ -5,12 +5,12 @@ import {
   CheckCircle, AlertCircle, Pencil, Trash2,
   Search, CreditCard,
 } from 'lucide-react';
-import { Button } from '@/components/ui';
-import SimpleGraph from '@/components/ui/SimpleGraph';
-import { ReservaFlow } from '@/components/ui/ReservaFlow';
+import { Button } from '@/views/components/ui';
+import SimpleGraph from '@/views/components/ui/SimpleGraph';
+import { ReservaFlow } from '@/views/components/ui/ReservaFlow';
 import {
   useReservas, contarAsientos, type Salida, type Reserva,
-} from '@/context/ReservasContext';
+} from '@/controllers/context/ReservasContext';
 
 /* ─────────────────── KPI card ── */
 const KPI = ({ title, value, icon, color, bg, sub }: {

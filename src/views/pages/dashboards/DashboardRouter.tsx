@@ -1,4 +1,4 @@
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/controllers/context/AuthContext';
 import { ClienteDashboard } from './ClienteDashboard';
 import { OperarioDashboard } from './OperarioDashboard';
 import { AdminDashboard } from './AdminDashboard';

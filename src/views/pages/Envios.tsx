@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Package, MapPin, Weight, ChevronRight, CheckCircle, Clock, Truck } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '@/views/components/ui';
 
 const CIUDADES = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga', 'Cartagena', 'Pereira', 'Manizales'];
 

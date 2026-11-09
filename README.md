@@ -23,46 +23,42 @@ npm run dev
 
 ```
 src/
-├── components/
-│   ├── ui/           # Componentes base reutilizables
-│   │   ├── Button.tsx
-│   │   ├── Card.tsx
-│   │   ├── Input.tsx
-│   │   ├── Select.tsx
-│   │   ├── Modal.tsx
-│   │   ├── Tabs.tsx
-│   │   ├── Badge.tsx
-│   │   ├── Spinner.tsx
-│   │   └── Tooltip.tsx
-│   └── layout/       # Layout principal
-│       └── Layout.tsx   # Header, Footer, MainLayout
-├── pages/            # Páginas públicas
-│   ├── Home.tsx
-│   ├── Pasajeros.tsx      # Compra tiquetes (3 pasos)
-│   ├── Envios.tsx         # Cotizar envíos (4 pasos)
-│   ├── Rastreo.tsx        # Tracking con timeline
-│   ├── Servicios.tsx
-│   ├── Login.tsx
-│   └── Demo.tsx           # Playground componentes
-├── layouts/
-│   └── DashboardLayout.tsx
-├── pages/dashboards/
-│   ├── DashboardRouter.tsx
-│   ├── MisViajes.tsx
-│   ├── MisEnvios.tsx
-│   ├── Perfil.tsx
-│   └── Configuracion.tsx
-├── hooks/            # Custom hooks
-│   ├── useLocalStorage.ts
-│   ├── useDebounce.ts
-│   ├── useMediaQuery.ts
-│   └── useToggle.ts
-├── utils/            # Utilidades
-│   ├── cn.ts
-│   ├── format.ts
-│   └── constants.ts
-├── types/            # TypeScript types
-└── assets/
+├── models/           # Modelo: tipos y datos del dominio
+│   ├── types/          # TypeScript types
+│   ├── constants.ts    # Ciudades, tarifas, estados
+│   └── format.ts       # Formato moneda/fechas
+├── controllers/      # Controlador: estado y lógica
+│   ├── context/        # AuthContext, ReservasContext
+│   └── hooks/          # Custom hooks
+├── views/            # Vista: presentación
+│   ├── components/
+│   │   ├── ui/         # Componentes base reutilizables
+│   │   │   ├── Button.tsx
+│   │   │   ├── Card.tsx
+│   │   │   ├── Input.tsx
+│   │   │   ├── Select.tsx
+│   │   │   ├── Modal.tsx
+│   │   │   ├── Tabs.tsx
+│   │   │   ├── Badge.tsx
+│   │   │   ├── Spinner.tsx
+│   │   │   └── Tooltip.tsx
+│   │   └── layout/     # Layout principal (Header, Footer)
+│   ├── pages/          # Páginas públicas
+│   │   ├── Home.tsx
+│   │   ├── Pasajeros.tsx   # Compra tiquetes (3 pasos)
+│   │   ├── Envios.tsx      # Cotizar envíos (4 pasos)
+│   │   ├── Rastreo.tsx      # Tracking con timeline
+│   │   ├── Servicios.tsx
+│   │   ├── Login.tsx
+│   │   ├── Demo.tsx        # Playground componentes
+│   │   └── dashboards/     # Admin, Cliente, Operario
+│   └── layouts/
+│       └── DashboardLayout.tsx
+├── utils/            # Helpers compartidos
+│   └── cn.ts
+├── App.tsx
+├── main.tsx
+└── index.css
 ```
 
 ##  Páginas implementadas

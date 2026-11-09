@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Truck, Shield, Users, Briefcase } from 'lucide-react';
-import { useAuth, Role } from '@/context/AuthContext';
+import { useAuth, Role } from '@/controllers/context/AuthContext';
 
 export const Login = () => {
   const { login } = useAuth();

@@ -9,7 +9,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, CheckCircle, Info } from 'lucide-react';
-import type { SeatStatus } from '@/context/ReservasContext';
+import type { SeatStatus } from '@/controllers/context/ReservasContext';
 
 /* ─────────────────── Types ── */
 

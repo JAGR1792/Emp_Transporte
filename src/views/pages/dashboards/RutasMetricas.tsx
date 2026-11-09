@@ -4,7 +4,7 @@ import {
   Plus, Pencil, Trash2, X, Check, TrendingUp,
   Users, DollarSign, Percent, MapPin, Bus, Clock
 } from 'lucide-react';
-import SimpleGraph, { type DataPoint } from '@/components/ui/SimpleGraph';
+import SimpleGraph, { type DataPoint } from '@/views/components/ui/SimpleGraph';
 
 /* ─────────────────────────── Types ─────────────────────────────── */
 

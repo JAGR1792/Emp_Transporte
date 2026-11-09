@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Package, MapPin, CheckCircle, Clock, Truck, AlertCircle, Home } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '@/views/components/ui';
 
 interface Envio {
   guia: string;

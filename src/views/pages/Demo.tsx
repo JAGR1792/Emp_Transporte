@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Beaker, AlertTriangle, TrendingUp } from 'lucide-react';
-import ShapeGrid from '@/components/ui/ShapeGrid';
-import { Button } from '@/components/ui';
-import SimpleGraph, { type DataPoint } from '@/components/ui/SimpleGraph';
+import ShapeGrid from '@/views/components/ui/ShapeGrid';
+import { Button } from '@/views/components/ui';
+import SimpleGraph, { type DataPoint } from '@/views/components/ui/SimpleGraph';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Shape = 'square' | 'hexagon' | 'circle' | 'triangle';

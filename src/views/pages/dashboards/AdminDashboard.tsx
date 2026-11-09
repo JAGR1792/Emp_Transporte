@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Truck, Users, AlertTriangle, Package, Gauge, UserCheck, Building, X } from 'lucide-react';
-import SimpleGraph from '@/components/ui/SimpleGraph';
-import SelectorSillas from '@/components/ui/SelectorSillas';
-import { useReservas, contarAsientos, type Salida } from '@/context/ReservasContext';
+import SimpleGraph from '@/views/components/ui/SimpleGraph';
+import SelectorSillas from '@/views/components/ui/SelectorSillas';
+import { useReservas, contarAsientos, type Salida } from '@/controllers/context/ReservasContext';
 
 /* ─────────────────── KPI ── */
 const KPI = ({ title, value, change, changeType, icon, color, bg }: { title: string; value: string; change: string; changeType: 'positive' | 'negative' | 'neutral'; icon: React.ReactNode; color: string; bg: string }) => (

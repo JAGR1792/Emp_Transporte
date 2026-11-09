@@ -1,6 +1,6 @@
 import { QRCodeSVG } from 'qrcode.react';
 import { Bus, Calendar, Clock, User, Hash } from 'lucide-react';
-import type { Reserva, Salida } from '@/context/ReservasContext';
+import type { Reserva, Salida } from '@/controllers/context/ReservasContext';
 
 export const TicketCard = ({ reserva, salida }: { reserva: Reserva; salida: Salida }) => {
   return (

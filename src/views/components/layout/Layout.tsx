@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils'
-import { Button } from '@/components/ui'
+import { Button } from '@/views/components/ui'
 import { Menu, X, Truck, MapPin, Phone, Mail, Users, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
 
 const NAV_ITEMS = [

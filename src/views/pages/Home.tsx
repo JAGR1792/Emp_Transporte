@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui'
-import ShapeGrid from '@/components/ui/ShapeGrid'
+import { Button } from '@/views/components/ui'
+import ShapeGrid from '@/views/components/ui/ShapeGrid'
 import { Truck, MapPin, Package, ShieldCheck, Clock, Globe } from 'lucide-react'
 
 export const Home = () => {

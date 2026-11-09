@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Calendar, Users, Clock, Star, ChevronLeft } from 'lucide-react';
-import { Button } from '@/components/ui';
-import { ReservaFlow } from '@/components/ui/ReservaFlow';
-import { useReservas, contarAsientos, type Salida } from '@/context/ReservasContext';
+import { Button } from '@/views/components/ui';
+import { ReservaFlow } from '@/views/components/ui/ReservaFlow';
+import { useReservas, contarAsientos, type Salida } from '@/controllers/context/ReservasContext';
 
 const CIUDADES = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga', 'Cartagena', 'Pereira', 'Manizales', 'Armenia', 'Ibagué'];
 

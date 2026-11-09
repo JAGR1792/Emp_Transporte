@@ -4,10 +4,10 @@ import {
   X, CheckCircle, Printer, Banknote, CreditCard,
   UserCircle, Hash, Phone,
 } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '@/views/components/ui';
 import SelectorSillas from './SelectorSillas';
 import { TicketCard } from './TicketCard';
-import { useReservas, type Salida, type Pasajero, type Reserva } from '@/context/ReservasContext';
+import { useReservas, type Salida, type Pasajero, type Reserva } from '@/controllers/context/ReservasContext';
 
 /* ─────────────────── Pasajero Form ── */
 const PasajeroForm = ({
